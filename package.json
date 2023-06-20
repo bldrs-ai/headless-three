@@ -1,0 +1,16 @@
+{
+  "type": "module",
+  "dependencies": {
+    "gl": "^6.0.2",
+    "jsdom": "^22.1.0",
+    "node-fetch": "^3.3.1",
+    "pngjs": "^7.0.0",
+    "three": "^0.149.0",
+    "web-ifc": "^0.0.41",
+    "web-ifc-three": "file:../web-ifc-three/web-ifc-three/dist/web-ifc-three-0.0.134.tgz",
+    "xhr2": "^0.2.1"
+  },
+  "devDependencies": {
+    "esbuild": "^0.18.4"
+  }
+}
