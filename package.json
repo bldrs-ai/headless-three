@@ -1,5 +1,6 @@
 {
   "type": "module",
+  "main": "src/headless.js",
   "dependencies": {
     "gl": "^6.0.2",
     "jsdom": "^22.1.0",

@@ -92,16 +92,20 @@ function takeScreenshot(glCtx, outputFilename = 'screenshot.png') {
 }
 
 
-async function loadModel() {
+async function loadIfcModel(filename) {
   const ifcLoader = new IFCLoader()
   // TODO(pablo): HAAAACK. This is relative to node_modules/web-ifc-three.
   ifcLoader.ifcManager.setWasmPath('../web-ifc/')
-  const fileBuf = fs.readFileSync('./index.ifc')
+  const fileBuf = fs.readFileSync(filename)
   const arrayBuf = Uint8Array.from(fileBuf).buffer
   const ifcModel = await ifcLoader.parse(arrayBuf)
   return ifcModel
 }
 
+if (process.argv.length < 3) {
+  console.error('Usage: node headless.js <file.ifc>')
+  process.exit(1)
+}
 
 const w = 1024, h = 768
 const aspect = w / h
@@ -114,7 +118,7 @@ const scene = new THREE.Scene()
 const camera = initCamera(45, aspect, -50, 40, 120, 0)
 initLights(scene)
 
-const model = await loadModel()
+const model = await loadIfcModel(process.argv[2])
 model.position.set(-40, 0, 0)
 scene.add(model)
 
