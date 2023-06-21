@@ -27,4 +27,5 @@ headless-three> yarn install
 headless-three> node src/headless.js index.ifc && open screenshot.png
 ```
 
+Example render of index.ifc:
 ![index.ifc rendered to screenshot.png](https://github.com/bldrs-ai/headless-three/blob/main/screenshot.png)
