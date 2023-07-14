@@ -1,14 +1,15 @@
 import esbuild from 'esbuild'
 
+// TODO(pablo): this builds for me, but the bundle isn't running yet.
 
 esbuild
   .build({
-    entryPoints: ['./headless.js'],
+    entryPoints: ['./src/headless.js'],
     outfile: './bundle.js',
     bundle: true,
     platform: 'node',
     target: ['node16'],
-    external: ['*canvas.node', 'three', './xhr-sync-worker.js'],
+//    external: ['*canvas.node', 'three', './xhr-sync-worker.js'],
     format: 'esm',
     logLevel: 'info',
   })

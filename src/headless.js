@@ -1,5 +1,15 @@
 import * as THREE from 'three'
-import {initCamera, initDom, initGl, initLights, initRenderer, loadIfcModel, takeScreenshot} from "./lib.js";
+import {
+  doRender,
+  fitModelToFrame,
+  initCamera,
+  initDom,
+  initGl,
+  initLights,
+  initRenderer,
+  loadIfcModel,
+  takeScreenshot,
+} from "./lib.js";
 import './fetch-polyfill.js'
 
 import {EffectComposer} from 'three/addons/postprocessing/EffectComposer.js'
@@ -9,43 +19,53 @@ import {GammaCorrectionShader} from 'three/addons/shaders/GammaCorrectionShader.
 
 
 if (process.argv.length < 3) {
-  console.error('Usage: node headless.js <file.ifc>')
+  console.error('Usage: node headless.js <file.ifc> <cx,cy,cz,tx,ty,tz>')
   process.exit(1)
 }
 
 const w = 1024, h = 768
 const aspect = w / h
-
-initDom()
+const dom = initDom()
 const glCtx = initGl(w, h)
 const renderer = initRenderer(glCtx, w, h)
-
 const scene = new THREE.Scene()
-const camera = initCamera(45, aspect, -50, 40, 120, 0)
+
+
 initLights(scene)
 
+
+const camera = initCamera(45, aspect)
+
+
 const model = await loadIfcModel(process.argv[2])
-model.position.set(-40, 0, 0)
 scene.add(model)
+// Materials can be accessed e.g.:
+//   model.material[0].transparent = true
+//   model.material[0].opacity = 0.1
+
+
+// Normalize look and zoom to fit the model in the render frame using
+// the same alg as Share.
+fitModelToFrame(renderer.domElement, scene, model, camera)
+
+
+// Apply URL coords
+const camCoordStr = process.argv[3]
+let cc = camCoordStr ? camCoordStr.split(',').map(x => parseFloat(x)) : [0, 0, 0, 0, 0, 0]
+const px = cc[0]
+const py = cc[1]
+const pz = cc[2]
+const tx = cc[3]
+const ty = cc[4]
+const tz = cc[5]
+camera.position.set(px, py, pz)
+camera.lookAt(tx, ty, tz)
+
 
 // headless gl has some rendering issues, e.g. no-AA
 // See https://github.com/stackgl/headless-gl/issues/30
 const useSsaa = false
-if (useSsaa) {
-  const composer = new EffectComposer(renderer)
-  composer.setPixelRatio(window.devicePixelRatio || 1)
-  // composer.addPass(new RenderPass(scene, camera))
-  const ssaaPass = new SSAARenderPass(scene, camera)
-  ssaaPass.sampleLevel = 2
-  ssaaPass.unbiased = true
-  ssaaPass.clearColor = 0xffffff
-  ssaaPass.clearAlpha = 1.0
-  ssaaPass.enabled = true
-  composer.addPass(ssaaPass)
-  composer.addPass(new ShaderPass(GammaCorrectionShader))
-  composer.render()
-} else {
-  renderer.render(scene, camera)
-}
+doRender(renderer, scene, camera, useSsaa)
+
 
 takeScreenshot(glCtx)
