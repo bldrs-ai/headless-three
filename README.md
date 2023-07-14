@@ -33,3 +33,8 @@ headless-three> node src/headless.js index.ifc -150.147,-85.796,167.057,-32.603,
 
 Example render of index.ifc:
 ![index.ifc rendered to screenshot.png](https://github.com/bldrs-ai/headless-three/blob/main/screenshot.png)
+
+
+## Design
+
+![dataflow](https://github.com/bldrs-ai/headless-three/blob/main/flow.png)
