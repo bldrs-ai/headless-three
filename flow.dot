@@ -1,0 +1,11 @@
+digraph flow {
+  Init [label="Init DOM and GL, lighting"];
+  Load [label="Load model file or URL"];
+  Add [label="Add model to scene"];
+  Fit [label="Fit to frame"];
+  Camera [label="Position camera (optional)"];
+  Render;
+  Write [label="Write to png"];
+  Init -> Load -> Add -> Fit -> Camera -> Render -> Write;
+}
+
