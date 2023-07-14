@@ -7,15 +7,9 @@ import {
   initGl,
   initLights,
   initRenderer,
-  loadIfcModel,
-  takeScreenshot,
+  loadIfcFile,
+  saveScreenshot,
 } from "./lib.js";
-import './fetch-polyfill.js'
-
-import {EffectComposer} from 'three/addons/postprocessing/EffectComposer.js'
-import {SSAARenderPass} from 'three/addons/postprocessing/SSAARenderPass.js'
-import {ShaderPass} from 'three/addons/postprocessing/ShaderPass.js'
-import {GammaCorrectionShader} from 'three/addons/shaders/GammaCorrectionShader.js'
 
 
 if (process.argv.length < 3) {
@@ -37,7 +31,7 @@ initLights(scene)
 const camera = initCamera(45, aspect)
 
 
-const model = await loadIfcModel(process.argv[2])
+const model = await loadIfcFile(process.argv[2])
 scene.add(model)
 // Materials can be accessed e.g.:
 //   model.material[0].transparent = true
@@ -49,7 +43,7 @@ scene.add(model)
 fitModelToFrame(renderer.domElement, scene, model, camera)
 
 
-// Apply URL coords
+// Apply URL camera coords.
 const camCoordStr = process.argv[3]
 let cc = camCoordStr ? camCoordStr.split(',').map(x => parseFloat(x)) : [0, 0, 0, 0, 0, 0]
 const px = cc[0]
@@ -68,4 +62,4 @@ const useSsaa = false
 doRender(renderer, scene, camera, useSsaa)
 
 
-takeScreenshot(glCtx)
+saveScreenshot(glCtx)

@@ -7,6 +7,10 @@ import {PNG} from 'pngjs'
 import * as THREE from 'three'
 import {IFCLoader} from 'web-ifc-three/web-ifc-three.js'
 import './fetch-polyfill.js'
+import {EffectComposer} from 'three/addons/postprocessing/EffectComposer.js'
+import {SSAARenderPass} from 'three/addons/postprocessing/SSAARenderPass.js'
+import {ShaderPass} from 'three/addons/postprocessing/ShaderPass.js'
+import {GammaCorrectionShader} from 'three/addons/shaders/GammaCorrectionShader.js'
 
 
 /** Init global.document, which three uses to create its canvas. */
@@ -42,6 +46,7 @@ export function initGl(width, height) {
 }
 
 
+/** Setup fullscreen renderer. */
 export function initRenderer(glCtx, width, height) {
   const renderer = new THREE.WebGLRenderer({context: glCtx, antialias: true})
   renderer.setSize(width, height)
@@ -57,6 +62,7 @@ export function initCamera(fov = 45, aspect = 3) {
 }
 
 
+/** Setup a couple directional lights and one ambient to make the scene look good. */
 export function initLights(scene) {
   // web-ifc-three example/src/scene.js
   const directionalLight1 = new THREE.DirectionalLight(0xffeeff, 0.8)
@@ -70,10 +76,7 @@ export function initLights(scene) {
 }
 
 
-export function takeScreenshot(glCtx, outputFilename = 'screenshot.png') {
-  captureScreenshot(glCtx).pipe(fs.createWriteStream(outputFilename))
-}
-
+/** Reads the pixels from the gl screen, then writes them as PNG data. */
 export function captureScreenshot(glCtx) {
   const width = glCtx.drawingBufferWidth
   const height = glCtx.drawingBufferHeight
@@ -99,7 +102,41 @@ export function captureScreenshot(glCtx) {
 }
 
 
-export async function loadIfcModel(filename) {
+/**
+ * Takes a screenshot of the scene from the camera and writes it out
+ * to a png.
+ */
+export function saveScreenshot(glCtx, outputFilename = 'screenshot.png') {
+  captureScreenshot(glCtx).pipe(fs.createWriteStream(outputFilename))
+}
+
+
+/**
+ * Use IFC.js's IFCLoader to read the model file into a three.js mesh.
+ * This method normalizes the position of the model to the camera and
+ * should be calle before camera URL coordinates from Share are set.
+ */
+export async function loadIfcModel(ifcLoader, modelData) {
+  // Setting COORDINATE_TO_ORIGIN is necessary to align the model as
+  // it is in Share.  USE_FAST_BOOLS is also used live, tho not sure
+  // what it does.
+  await ifcLoader.ifcManager.applyWebIfcConfig({
+    COORDINATE_TO_ORIGIN: true,
+    USE_FAST_BOOLS: true
+  });
+
+  const fileBuf = fs.readFileSync(filename)
+  const arrayBuf = Uint8Array.from(fileBuf).buffer
+  const ifcModel = await ifcLoader.parse(arrayBuf)
+  return ifcModel
+}
+
+
+/**
+ * Sets up the IFCLoader to use the wasm module and move the model to
+ * the origin on load.
+ */
+async function initIfcLoader() {
   const ifcLoader = new IFCLoader()
   // TODO(pablo): HAAAACK. This is relative to node_modules/web-ifc-three.
   ifcLoader.ifcManager.setWasmPath('../web-ifc/')
@@ -111,7 +148,18 @@ export async function loadIfcModel(filename) {
     COORDINATE_TO_ORIGIN: true,
     USE_FAST_BOOLS: true
   });
-  //const coordMatrix = ifcLoader.ifcManager.ifcAPI.GetCoordinationMatrix(0)
+
+  // TODO(pablo): maybe useful to print the coordination matrix from
+  // the normalized view for debug?  Will need to be called after
+  // model is loaded.
+  // const coordMatrix = ifcLoader.ifcManager.ifcAPI.GetCoordinationMatrix(0)
+
+  return ifcLoader
+}
+
+
+export async function loadIfcFile(filename) {
+  const ifcLoader = await initIfcLoader()
   const fileBuf = fs.readFileSync(filename)
   const arrayBuf = Uint8Array.from(fileBuf).buffer
   const ifcModel = await ifcLoader.parse(arrayBuf)
@@ -119,16 +167,15 @@ export async function loadIfcModel(filename) {
 }
 
 
-export async function loadIfcFromUrl(u) {
-  const ifcLoader = new IFCLoader()
-  await ifcLoader.ifcManager.setWasmPath('../web-ifc/')
-
-  const response = await axios.get(u, { responseType: 'arraybuffer' })
+export async function loadIfcUrl(url) {
+  const ifcLoader = await initIfcLoader()
+  const response = await axios.get(url, { responseType: 'arraybuffer' })
   const ifcModel = await ifcLoader.parse(response.data)
   return ifcModel
 }
 
 
+/** Uses camera-controls library to zoom the camera to fill dom view with the model. */
 export function fitModelToFrame(domElement, scene, model, camera) {
   const box = new THREE.Box3().setFromObject(model)
   const sceneSize = new THREE.Vector3()
@@ -144,7 +191,11 @@ export function fitModelToFrame(domElement, scene, model, camera) {
 }
 
 
-export function doRender(renderer, scene, camera, useSsaa) {
+/**
+ * Just calls renderer.render, or does an experimental
+ * post-processing if useSsaa is true.
+ */
+export function doRender(renderer, scene, camera, useSsaa = false) {
   if (useSsaa) {
     const composer = new EffectComposer(renderer)
     composer.setPixelRatio(window.devicePixelRatio || 1)

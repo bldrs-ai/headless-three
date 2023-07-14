@@ -24,7 +24,11 @@ headless-three> yarn install
 
 ## Run the tool
 ```
-headless-three> node src/headless.js index.ifc && open screenshot.png
+# Grab the coords from a model on Bldrs, e.g. the default homepage:
+#   https://bldrs.ai/share/v/p/index.ifc#c:-150.147,-85.796,167.057,-32.603,17.373,-1.347
+#
+# Then add them as an arg after the model filename:
+headless-three> node src/headless.js index.ifc -150.147,-85.796,167.057,-32.603,17.373,-1.347 && open screenshot.png
 ```
 
 Example render of index.ifc:
