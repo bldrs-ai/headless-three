@@ -1,6 +1,9 @@
 {
   "type": "module",
   "main": "src/headless.js",
+  "scripts": {
+    "build": "cd node_modules/web-ifc-three/web-ifc-three && node build.esb.js"
+  },
   "dependencies": {
     "axios": "^1.4.0",
     "camera-controls": "^2.7.0",
@@ -11,7 +14,10 @@
     "pngjs": "^7.0.0",
     "three": "^0.149.0",
     "web-ifc": "^0.0.41",
-    "web-ifc-three": "file:../../b/web-ifc-three/web-ifc-three/dist/web-ifc-three-0.0.134.tgz",
+    "web-ifc-three": "https://github.com/bldrs-ai/web-ifc-three.git",
     "xhr2": "^0.2.1"
+  },
+  "devDependencies": {
+    "esbuild": "^0.18.16"
   }
 }

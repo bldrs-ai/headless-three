@@ -4,22 +4,12 @@ This library aims for headless rendering of three.js scenes based on models by c
 Currently supports IFC models.
 
 ## Setup
-This library uses a custom build of web-ifc-three.  Clone both as sibling directories, then build in turn.
+This library uses a custom build of web-ifc-three.
 
-*The relative paths matter and are harcoded*.
 ```
-> git clone https://github.com/bldrs-ai/web-ifc-three   # a custom fork of web-ifc-three
-> git clone https://github.com/bldrs-ai/headless-three
-> cd web-ifc-three/web-ifc-three
-web-ifc-three/web-ifc-three> npm i
-web-ifc-three/web-ifc-three> node build.esb.js
-Build succeeded.
-web-ifc-three/web-ifc-three> cd dist
-web-ifc-three/web-ifc-three/dist> npm pack
-web-ifc-three/web-ifc-three/dist> ls web-ifc-three-0.0.134.tgz
-web-ifc-three-0.0.134.tgz
-web-ifc-three/web-ifc-three/dist> cd ../../../headless-three
-headless-three> yarn install
+$ yarn install
+$ npm_config_build_from_source=true yarn add --force https://github.com/bldrs-ai/web-ifc-three.git
+$ yarn build
 ```
 
 ## Run the tool
