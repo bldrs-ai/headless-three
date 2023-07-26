@@ -4,7 +4,7 @@ import gl from 'gl'
 import * as THREE from 'three'
 import {PNG} from 'pngjs'
 import axios from 'axios'
-import {initDom, initGl, initRenderer, initCamera, initLights, captureScreenshot, loadIfcFromUrl} from './src/lib.js'
+import {initDom, initGl, initRenderer, initCamera, initLights, captureScreenshot, loadIfcUrl} from './lib.js'
 
 const app = express()
 const port = 8001
@@ -25,7 +25,7 @@ app.post('/rasterize', async (req, res) => {
   const camera = initCamera(45, aspect, -50, 40, 120, 0)
   initLights(scene)
 
-  const model = await loadIfcFromUrl(req.body.url)
+  const model = await loadIfcUrl(req.body.url)
   model.position.set(-40, 0, 0)
   scene.add(model)
 
