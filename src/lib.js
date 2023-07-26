@@ -5,7 +5,7 @@ import gl from 'gl'
 import {JSDOM} from 'jsdom'
 import {PNG} from 'pngjs'
 import * as THREE from 'three'
-import {IFCLoader} from 'web-ifc-three/web-ifc-three.js'
+import {IFCLoader} from 'web-ifc-three/web-ifc-three/dist/web-ifc-three.js'
 import './fetch-polyfill.js'
 import {EffectComposer} from 'three/addons/postprocessing/EffectComposer.js'
 import {SSAARenderPass} from 'three/addons/postprocessing/SSAARenderPass.js'
@@ -139,7 +139,7 @@ export async function loadIfcModel(ifcLoader, modelData) {
 async function initIfcLoader() {
   const ifcLoader = new IFCLoader()
   // TODO(pablo): HAAAACK. This is relative to node_modules/web-ifc-three.
-  ifcLoader.ifcManager.setWasmPath('../web-ifc/')
+  ifcLoader.ifcManager.setWasmPath('../../../web-ifc/')
 
   // Setting COORDINATE_TO_ORIGIN is necessary to align the model as
   // it is in Share.  USE_FAST_BOOLS is also used live, tho not sure
