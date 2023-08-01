@@ -1,9 +1,5 @@
 import express from 'express'
-import {JSDOM} from 'jsdom'
-import gl from 'gl'
 import * as THREE from 'three'
-import {PNG} from 'pngjs'
-import axios from 'axios'
 import {initDom, initGl, initRenderer, initCamera, initLights, captureScreenshot, loadIfcUrl} from './lib.js'
 
 const app = express()
