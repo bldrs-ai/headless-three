@@ -36,7 +36,6 @@ app.post('/rasterize', async (req, res) => {
   }
 
   const model = await loadIfcUrl(ifcURL)
-  model.position.set(-40, 0, 0)
   scene.add(model)
 
   if (req.body.camera) {
