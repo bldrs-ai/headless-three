@@ -38,6 +38,10 @@ app.post('/rasterize', async (req, res) => {
   const model = await loadIfcUrl(ifcURL)
   scene.add(model)
 
+  // Normalize look and zoom to fit the model in the render frame using
+  // the same alg as Share.
+  fitModelToFrame(renderer.domElement, scene, model, camera)
+
   if (req.body.camera) {
     coordinates = [
       req.body.camera.cx, req.body.camera.cy, req.body.camera.cz,
