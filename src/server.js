@@ -1,10 +1,7 @@
 import express from 'express'
-import {JSDOM} from 'jsdom'
-import gl from 'gl'
 import * as THREE from 'three'
-import {PNG} from 'pngjs'
-import axios from 'axios'
 import {initDom, initGl, initRenderer, initCamera, initLights, captureScreenshot, loadIfcUrl} from './lib.js'
+import {parseURLFromBLDRS} from './urls.js'
 
 const app = express()
 const port = 8001
@@ -25,14 +22,36 @@ app.post('/rasterize', async (req, res) => {
   const camera = initCamera(45, aspect, -50, 40, 120, 0)
   initLights(scene)
 
-  const model = await loadIfcUrl(req.body.url)
-  model.position.set(-40, 0, 0)
+  let ifcURL = req.body.url
+  let coordinates = []
+
+  const url = new URL(ifcURL)
+  if (url.hostname === 'bldrs.ai') {
+    const b = parseURLFromBLDRS(url)
+    ifcURL = b.target.url
+
+    if ('c' in b.params) {
+      coordinates = b.params['c'].split(',').map(f => parseFloat(f))
+    }
+  }
+
+  const model = await loadIfcUrl(ifcURL)
   scene.add(model)
 
+  // Normalize look and zoom to fit the model in the render frame using
+  // the same alg as Share.
+  fitModelToFrame(renderer.domElement, scene, model, camera)
+
   if (req.body.camera) {
-    console.log('Changing camera view...')
-    camera.lookAt(req.body.camera.x, req.body.camera.y, req.body.camera.z)
-    camera.setFocalLength(600)
+    coordinates = [
+      req.body.camera.cx, req.body.camera.cy, req.body.camera.cz,
+      req.body.camera.tx, req.body.camera.ty, req.body.camera.tz
+    ]
+  }
+
+  if (coordinates.length === 6) {
+    camera.position.set(coordinates[0], coordinates[1], coordinates[2])
+    camera.lookAt(coordinates[3], coordinates[4], coordinates[5])
   }
 
   renderer.render(scene, camera)
