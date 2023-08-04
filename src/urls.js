@@ -47,7 +47,7 @@ export const parseURLFromBLDRS = (url) => {
       organization: org,
       repository: repo,
       ref: ref,
-      url: new URL(`/${org}/${repo}/blob/${ref}/${path}`, 'https://github.com')
+      url: new URL(`/${org}/${repo}/${ref}/${path}`, 'https://raw.githubusercontent.com')
     }
   }
 
