@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  app:
+    image: bldrs/headless-three
+    build:
+      context: .
+    platform: linux/amd64
+    ports:
+      - 8001:8001
+    restart: unless-stopped
+    tty: true
+    stdin_open: true
