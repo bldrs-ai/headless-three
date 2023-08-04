@@ -1,0 +1,10 @@
+Dockerfile
+docker-compose.yml
+*~
+.*.sw[a-p]
+.idea
+.gitignore
+node_modules
+dist/
+*.png
+*.wasm
