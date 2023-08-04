@@ -42,6 +42,10 @@ export function initDom() {
 /** Create a WebGL context using the 'gl' package. */
 export function initGl(width, height) {
   const glCtx = gl(width, height, {antialias: true})
+  if (glCtx === null) {
+    throw new Error('Could not create requested WebGL context')
+  }
+
   return glCtx
 }
 
