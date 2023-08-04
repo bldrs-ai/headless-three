@@ -1,6 +1,15 @@
 import express from 'express'
 import * as THREE from 'three'
-import {initDom, initGl, initRenderer, initCamera, initLights, captureScreenshot, loadIfcUrl} from './lib.js'
+import {
+  initDom,
+  initGl,
+  initRenderer,
+  initCamera,
+  initLights,
+  captureScreenshot,
+  loadIfcUrl,
+  fitModelToFrame
+} from './lib.js'
 import {parseURLFromBLDRS} from './urls.js'
 
 const app = express()
