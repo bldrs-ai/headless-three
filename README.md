@@ -28,3 +28,15 @@ Example render of index.ifc:
 ## Design
 
 ![dataflow](https://github.com/bldrs-ai/headless-three/blob/main/flow.png)
+
+
+## Local Development (Server)
+
+To run the server locally, you will need a working Docker installation.
+
+    $ docker compose build   # Build the Docker image
+    $ docker compose up -d   # Start the server, accessible at http://localhost:8001
+    $ curl -d '{"url": "http://server.com/path/to/a/model.ifc"}' \
+        -H 'content-type: application/json' \
+        -o rendered.png \
+        http://localhost:8001/rasterize

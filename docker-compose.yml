@@ -9,5 +9,6 @@ services:
     ports:
       - 8001:8001
     restart: unless-stopped
+    init: true
     tty: true
     stdin_open: true
