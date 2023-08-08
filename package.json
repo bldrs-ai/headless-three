@@ -1,4 +1,5 @@
 {
+  "type": "module",
   "main": "src/headless.js",
   "scripts": {
     "build": "cd node_modules/web-ifc-three/web-ifc-three && node build.esb.js",

@@ -1,8 +1,5 @@
 import fs from 'fs'
 import './fetch-polyfill.js'
-// import {IFCLoader} from 'web-ifc-three'
-// import pkg from 'web-ifc-three'
-// const {IFCLoader} = pkg
 import {IFCLoader} from 'web-ifc-three/web-ifc-three/dist/web-ifc-three.js'
 import {DRACOLoader} from 'three/addons/loaders/DRACOLoader.js'
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js'
@@ -34,11 +31,11 @@ export async function load(
     let buf
     if (isData) {
       debug().log('Loader#load: isData:', true)
-      buf = fs.readFileSync(new URL(urlStr))
+      buf = fs.readFileSync(urlStr)
       buf = Uint8Array.from(buf).buffer
     } else {
       debug().log('Loader#load: isData:', false)
-      buf = fs.readFileSync(new URL(urlStr),  {encoding: 'utf-8'})
+      buf = fs.readFileSync(urlStr,  {encoding: 'utf-8'})
     }
     let model
     if (isAsync) {
@@ -101,7 +98,7 @@ async function findLoader(urlStr) {
     }
     default: throw new Error('Unknown type') // fix
   }
-  const isLocal = urlStr.startsWith('file://')
+  const isLocal = !urlStr.includes('://')
   return [loader, isAsync, isLocal, isData]
 }
 
