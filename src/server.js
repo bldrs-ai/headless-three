@@ -7,9 +7,9 @@ import {
   initCamera,
   initLights,
   captureScreenshot,
-  loadIfcUrl,
   fitModelToFrame
 } from './lib.js'
+import {load} from './Loader.js'
 import {parseURLFromBLDRS} from './urls.js'
 
 const app = express()
@@ -28,7 +28,7 @@ app.post('/render', async (req, res) => {
   const renderer = initRenderer(glCtx, w, h)
 
   const scene = new THREE.Scene()
-  const camera = initCamera(45, aspect, -50, 40, 120, 0)
+  const camera = initCamera(45, aspect)
   initLights(scene)
 
   let ifcURL = req.body.url
@@ -44,7 +44,7 @@ app.post('/render', async (req, res) => {
     }
   }
 
-  const model = await loadIfcUrl(ifcURL)
+  const model = await load(ifcURL)
   scene.add(model)
 
   // Normalize look and zoom to fit the model in the render frame using

@@ -1,12 +1,9 @@
-import axios from 'axios'
 import CameraControls from 'camera-controls'
 import fs from 'fs'
 import gl from 'gl'
 import {JSDOM} from 'jsdom'
 import {PNG} from 'pngjs'
 import * as THREE from 'three'
-import {IFCLoader} from 'web-ifc-three/web-ifc-three/dist/web-ifc-three.js'
-import './fetch-polyfill.js'
 import {EffectComposer} from 'three/addons/postprocessing/EffectComposer.js'
 import {SSAARenderPass} from 'three/addons/postprocessing/SSAARenderPass.js'
 import {ShaderPass} from 'three/addons/postprocessing/ShaderPass.js'
@@ -112,70 +109,6 @@ export function captureScreenshot(glCtx) {
  */
 export function saveScreenshot(glCtx, outputFilename = 'screenshot.png') {
   captureScreenshot(glCtx).pipe(fs.createWriteStream(outputFilename))
-}
-
-
-/**
- * Use IFC.js's IFCLoader to read the model file into a three.js mesh.
- * This method normalizes the position of the model to the camera and
- * should be calle before camera URL coordinates from Share are set.
- */
-export async function loadIfcModel(ifcLoader, modelData) {
-  // Setting COORDINATE_TO_ORIGIN is necessary to align the model as
-  // it is in Share.  USE_FAST_BOOLS is also used live, tho not sure
-  // what it does.
-  await ifcLoader.ifcManager.applyWebIfcConfig({
-    COORDINATE_TO_ORIGIN: true,
-    USE_FAST_BOOLS: true
-  });
-
-  const fileBuf = fs.readFileSync(filename)
-  const arrayBuf = Uint8Array.from(fileBuf).buffer
-  const ifcModel = await ifcLoader.parse(arrayBuf)
-  return ifcModel
-}
-
-
-/**
- * Sets up the IFCLoader to use the wasm module and move the model to
- * the origin on load.
- */
-async function initIfcLoader() {
-  const ifcLoader = new IFCLoader()
-  // TODO(pablo): HAAAACK. This is relative to node_modules/web-ifc-three.
-  ifcLoader.ifcManager.setWasmPath('../../../web-ifc/')
-
-  // Setting COORDINATE_TO_ORIGIN is necessary to align the model as
-  // it is in Share.  USE_FAST_BOOLS is also used live, tho not sure
-  // what it does.
-  await ifcLoader.ifcManager.applyWebIfcConfig({
-    COORDINATE_TO_ORIGIN: true,
-    USE_FAST_BOOLS: true
-  });
-
-  // TODO(pablo): maybe useful to print the coordination matrix from
-  // the normalized view for debug?  Will need to be called after
-  // model is loaded.
-  // const coordMatrix = ifcLoader.ifcManager.ifcAPI.GetCoordinationMatrix(0)
-
-  return ifcLoader
-}
-
-
-export async function loadIfcFile(filename) {
-  const ifcLoader = await initIfcLoader()
-  const fileBuf = fs.readFileSync(filename)
-  const arrayBuf = Uint8Array.from(fileBuf).buffer
-  const ifcModel = await ifcLoader.parse(arrayBuf)
-  return ifcModel
-}
-
-
-export async function loadIfcUrl(url) {
-  const ifcLoader = await initIfcLoader()
-  const response = await axios.get(url, { responseType: 'arraybuffer' })
-  const ifcModel = await ifcLoader.parse(response.data)
-  return ifcModel
 }
 
 
