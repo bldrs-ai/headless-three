@@ -39,4 +39,4 @@ To run the server locally, you will need a working Docker installation.
     $ curl -d '{"url": "http://server.com/path/to/a/model.ifc"}' \
         -H 'content-type: application/json' \
         -o rendered.png \
-        http://localhost:8001/rasterize
+        http://localhost:8001/render

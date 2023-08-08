@@ -17,7 +17,7 @@ const port = 8001
 
 app.use(express.json())
 
-app.post('/rasterize', async (req, res) => {
+app.post('/render', async (req, res) => {
   console.log(req.body)
 
   const w = 1024, h = 768
