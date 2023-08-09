@@ -40,7 +40,9 @@ export const parseURLFromBLDRS = (url) => {
 
   if (url.pathname.indexOf('/share/v/gh') !== -1) {
     const p = url.pathname.substring('/share/v/gh'.length)
-    const [org, repo, ref, path] = p.substring(1).split('/', 4)
+    const parts = p.substring(1).split('/')
+    const [org, repo, ref] = parts
+    const path = parts.slice(3).join('/')
 
     parsed.type = 'vcs:github'
     parsed.target = {

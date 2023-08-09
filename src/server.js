@@ -1,6 +1,7 @@
 import express from 'express'
 import * as THREE from 'three'
 import {
+  doRender,
   initDom,
   initGl,
   initRenderer,
@@ -33,7 +34,6 @@ app.post('/render', async (req, res) => {
 
   let ifcURL = req.body.url
   let coordinates = []
-
   const url = new URL(ifcURL)
   if (url.hostname === 'bldrs.ai') {
     const b = parseURLFromBLDRS(url)
@@ -44,7 +44,10 @@ app.post('/render', async (req, res) => {
     }
   }
 
-  const model = await load(ifcURL)
+  const model = await load(ifcURL.toString())
+  // const mesh = model.children[0]
+  // console.log('MODEL', model, mesh.geometry.attributes.position.array, mesh.material)
+  // mesh.material.wireframe = true
   scene.add(model)
 
   // Normalize look and zoom to fit the model in the render frame using
@@ -63,7 +66,8 @@ app.post('/render', async (req, res) => {
     camera.lookAt(coordinates[3], coordinates[4], coordinates[5])
   }
 
-  renderer.render(scene, camera)
+  const useSsaa = false
+  doRender(renderer, scene, camera, useSsaa)
 
   res.setHeader('content-type', 'image/png')
   captureScreenshot(glCtx).pipe(res)
