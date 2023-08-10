@@ -25,4 +25,4 @@ jobs:
 
       - name: Build and Deploy
         id: build-and-deploy
-        run: flyctl deploy --app headless-three-prod --remote-only --build-arg 'GIT_COMMIT=${{ github.sha }}' --build-arg 'GIT_TAG=${{ github.ref_name }}'
+        run: flyctl deploy --app headless-three-prod --build-arg 'GIT_COMMIT=${{ github.sha }}' --build-arg 'GIT_TAG=${{ github.ref_name }}'
