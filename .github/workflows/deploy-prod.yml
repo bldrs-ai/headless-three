@@ -4,6 +4,11 @@ on:
   push:
     branches:
       - main
+    tags:
+      - "v*.*.*"
+
+  workflow_dispatch:
+
 env:
   FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
 
