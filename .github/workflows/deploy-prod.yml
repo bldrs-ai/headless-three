@@ -73,6 +73,8 @@ jobs:
         with:
           context: .
           platforms: linux/amd64
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
           push: true
           tags: ${{ steps.docker-image-metadata.outputs.tags }}
           labels: ${{ steps.docker-image-metadata.outputs.labels }}
