@@ -23,6 +23,10 @@ jobs:
         with:
           buildkit-flags: --debug
 
+      - name: Setup Fly.io command line tool
+        id: setup-flyctl
+        uses: superfly/flyctl-actions/setup-flyctl@master
+
       - name: Generate Docker metadata
         id: docker-image-metadata
         uses: docker/metadata-action@v4
