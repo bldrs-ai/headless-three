@@ -7,13 +7,13 @@ import {
   initGl,
   initLights,
   initRenderer,
-  loadIfcFile,
   saveScreenshot,
-} from "./lib.js";
+} from "./lib.js"
+import {load} from './Loader.js'
 
 
 if (process.argv.length < 3) {
-  console.error('Usage: node headless.js <file.ifc> <cx,cy,cz,tx,ty,tz>')
+  console.error('Usage: node headless.js <file:///path/to/file.(ifc|obj)> <cx,cy,cz,tx,ty,tz>')
   process.exit(1)
 }
 
@@ -30,8 +30,7 @@ initLights(scene)
 
 const camera = initCamera(45, aspect)
 
-
-const model = await loadIfcFile(process.argv[2])
+const model = await load(process.argv[2])
 scene.add(model)
 // Materials can be accessed e.g.:
 //   model.material[0].transparent = true

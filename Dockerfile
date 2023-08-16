@@ -8,7 +8,7 @@ RUN git clone --depth=1 https://github.com/IFCjs/web-ifc.git && \
 FROM node:16-slim AS builder
 
 RUN apt-get update && \
-    apt-get install -y git python3 pkg-config libx11-dev libxi-dev libgl-dev libpixman-1-dev libcairo2-dev libpango1.0-dev libjpeg-dev libgif-dev librsvg2-dev g++ make && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y git python3 pkg-config libx11-dev libxi-dev libgl-dev libpixman-1-dev libcairo2-dev libpango1.0-dev libjpeg-dev libgif-dev librsvg2-dev g++ make && \
     apt-get clean && \
     ln -s /usr/bin/python3 /usr/bin/python && \
     rm -rf /var/lib/apt/lists/*
@@ -29,7 +29,7 @@ FROM node:16-slim AS app
 ENV NODE_ENV production
 
 RUN apt-get update && \
-    apt-get install -y git mesa-utils xserver-xorg xvfb && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y git mesa-utils xserver-xorg xvfb && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
