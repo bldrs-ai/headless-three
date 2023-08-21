@@ -32,7 +32,16 @@ export function initDom() {
     }
   }
 
-  return global.document
+  global.getComputedStyle = () => {
+    return {
+      marginTop: '0',
+      marginRight: '0',
+      marginBottom: '0',
+      marginLeft: '0',
+    }
+  }
+
+    return global.document
 }
 
 
@@ -81,6 +90,7 @@ export function initLights(scene) {
 export function captureScreenshot(glCtx) {
   const width = glCtx.drawingBufferWidth
   const height = glCtx.drawingBufferHeight
+  console.log('screenshot WxH', width, height)
   const pixels = new Uint8Array(width * height * 4)
   glCtx.readPixels(0, 0, width, height, glCtx.RGBA, glCtx.UNSIGNED_BYTE, pixels)
 
