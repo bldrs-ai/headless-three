@@ -35,7 +35,7 @@ jobs:
         uses: docker/metadata-action@v4
         with:
           images: |
-            ghcr.io/bldrs-ai/headless-three
+            ghcr.io/${{ github.repository }}
             registry.fly.io/headless-three-prod
           tags: |
             type=ref,event=branch
