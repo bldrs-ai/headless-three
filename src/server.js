@@ -18,6 +18,10 @@ const port = 8001
 
 app.use(express.json())
 
+app.get('/healthcheck', (req, res) => {
+  res.status(200).send()
+})
+
 app.post('/render', async (req, res) => {
   console.log(req.body)
 
