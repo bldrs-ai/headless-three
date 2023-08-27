@@ -36,7 +36,12 @@ app.post('/render', async (req, res) => {
   const camera = initCamera(45, aspect)
   initLights(scene)
 
+  // Get the model URL, if none provided, return a 400 Bad Request
   let ifcURL = req.body.url
+  if (ifcURL === undefined) {
+    res.status(400).send()
+  }
+
   let coordinates = []
   const url = new URL(ifcURL)
   if (url.hostname === 'bldrs.ai') {
