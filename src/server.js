@@ -1,5 +1,6 @@
 import express from 'express'
 import * as THREE from 'three'
+import * as Sentry from '@sentry/node'
 import {
   doRender,
   initDom,
@@ -16,6 +17,12 @@ import {parseURLFromBLDRS} from './urls.js'
 const app = express()
 const port = 8001
 
+// Initialize and enable Sentry middleware
+// It must be the first middleware in the stack
+Sentry.init()
+app.use(Sentry.Handlers.requestHandler())
+
+// Enable JSON request body middleware
 app.use(express.json())
 
 app.get('/healthcheck', (req, res) => {
@@ -81,6 +88,9 @@ app.post('/render', async (req, res) => {
   res.setHeader('content-type', 'image/png')
   captureScreenshot(glCtx).pipe(res)
 })
+
+// Install Sentry error handler after all routes but before any other error handlers
+app.use(Sentry.Handlers.errorHandler())
 
 app.listen(port, () => {
   console.log(`Listening on 0.0.0.0:${port}`)
