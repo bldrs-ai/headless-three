@@ -77,6 +77,18 @@ export function initLights(scene) {
 }
 
 
+export function initThree(w = 1024, h = 768) {
+  const aspect = w / h
+  const dom = initDom()
+  const glCtx = initGl(w, h)
+  const renderer = initRenderer(glCtx, w, h)
+  const scene = new THREE.Scene()
+  initLights(scene)
+  const camera = initCamera(45, aspect)
+  return [glCtx, renderer, scene, camera]
+}
+
+
 /** Reads the pixels from the gl screen, then writes them as PNG data. */
 export function captureScreenshot(glCtx) {
   const width = glCtx.drawingBufferWidth
@@ -132,7 +144,7 @@ export function fitModelToFrame(domElement, scene, model, camera) {
  * Just calls renderer.render, or does an experimental
  * post-processing if useSsaa is true.
  */
-export function doRender(renderer, scene, camera, useSsaa = false) {
+export function render(renderer, scene, camera, useSsaa = false) {
   if (useSsaa) {
     const composer = new EffectComposer(renderer)
     composer.setPixelRatio(window.devicePixelRatio || 1)

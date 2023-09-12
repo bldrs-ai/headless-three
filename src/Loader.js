@@ -9,16 +9,19 @@ import debug from './debug.js'
 
 
 /**
- * @param {string} urlStr
+ * @param {URL} url
  * @return {Model|undefined}
  */
 export async function load(
-  urlStr,
-  onProgress = (progressEvent) => {console.log(progressEvent)},
-  onUnknownType = (errEvent) => {console.error(errEvent)},
-  onError = (errEvent) => {console.error(errEvent)}
+  url,
+  onProgress = (progressEvent) => {debug().log(progressEvent)},
+  onUnknownType = (errEvent) => {debug().error(errEvent)},
+  onError = (errEvent) => {debug().error(errEvent)}
 ) {
-  const [loader, isAsync, isLocal, isData] = await findLoader(urlStr)
+  debug().log('Loader#load: url', url)
+  const isFileOrigin = url.origin === 'file://'
+  const pathname = url.pathname
+  const [loader, isAsync, isData] = await findLoader(pathname)
   if (loader === undefined) {
     onUnknownType()
     return undefined
@@ -26,16 +29,16 @@ export async function load(
   // alternately, use axios
   // import axios from 'axios'
   //   const response = await axios.get(url, { responseType: 'arraybuffer' })
-  if (isLocal) {
-    debug().log('Loader#load: isLocal:', true)
+  if (isFileOrigin) {
+    debug().log('Loader#load: isFileOrigin:', true)
     let buf
     if (isData) {
       debug().log('Loader#load: isData:', true)
-      buf = fs.readFileSync(urlStr)
+      buf = fs.readFileSync(pathname)
       buf = Uint8Array.from(buf).buffer
     } else {
       debug().log('Loader#load: isData:', false)
-      buf = fs.readFileSync(urlStr,  {encoding: 'utf-8'})
+      buf = fs.readFileSync(url,  {encoding: 'utf-8'})
     }
     let model
     if (isAsync) {
@@ -49,10 +52,10 @@ export async function load(
     debug().log('Local file load: model:', model)
     return model
   } else {
-    debug().log('Network load urlStr:', urlStr)
+    debug().log('Network load url:', url)
     return await new Promise((resolve, reject) => {
       loader.load(
-        urlStr,
+        url,
         (model) => {
           debug().log('Loaders#load: onLoad: ', model)
           resolve(model)
@@ -72,18 +75,19 @@ export async function load(
 
 
 /**
- * @param {string} urlStr
+ * @param {string} pathname
  * @return {Loader|undefined}
  */
-async function findLoader(urlStr) {
-  const {parts, extension} = Filetype.splitAroundExtension(urlStr)
+async function findLoader(pathname) {
+  debug().log('Loader#findLoader, pathname:', pathname)
+  const {parts, extension} = Filetype.splitAroundExtension(pathname)
   let loader
   let isData = true
   let isAsync = false
   switch (extension) {
     case '.glb':
     case '.gltf': {
-      loader = newGltfLoader(urlStr)
+      loader = newGltfLoader(pathname)
       break
     }
     case '.ifc': {
@@ -98,15 +102,14 @@ async function findLoader(urlStr) {
     }
     default: throw new Error('Unknown type') // fix
   }
-  const isLocal = !urlStr.includes('://')
-  return [loader, isAsync, isLocal, isData]
+  return [loader, isAsync, isData]
 }
 
 
 /**
  * @return {GLTFLoader}
  */
-function newGltfLoader(path) {
+function newGltfLoader(pathname) {
   const loader = new GLTFLoader
   // TODO(pablo): extract and use path root.
   // loader.setPath()

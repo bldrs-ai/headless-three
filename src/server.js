@@ -1,78 +1,47 @@
 import express from 'express'
-import * as THREE from 'three'
 import {
-  doRender,
-  initDom,
-  initGl,
-  initRenderer,
-  initCamera,
-  initLights,
+  fitModelToFrame,
+  initThree,
+  render,
   captureScreenshot,
-  fitModelToFrame
-} from './lib.js'
+} from "./lib.js"
+import {parseUrl} from './urls.js'
 import {load} from './Loader.js'
-import {parseURLFromBLDRS} from './urls.js'
+import debug from './debug.js'
+
 
 const app = express()
 const port = 8001
 
 app.use(express.json())
 
+function parseCamera(pStr) {
+  if (pStr) {
+    return pStr.split(',')
+  }
+}
+
 app.post('/render', async (req, res) => {
-  console.log(req.body)
-
-  const w = 1024, h = 768
-  const aspect = w / h
-
-  initDom()
-  const glCtx = initGl(w, h)
-  const renderer = initRenderer(glCtx, w, h)
-
-  const scene = new THREE.Scene()
-  const camera = initCamera(45, aspect)
-  initLights(scene)
-
-  let ifcURL = req.body.url
-  let coordinates = []
-  const url = new URL(ifcURL)
-  if (url.hostname === 'bldrs.ai') {
-    const b = parseURLFromBLDRS(url)
-    ifcURL = b.target.url
-
-    if ('c' in b.params) {
-      coordinates = b.params['c'].split(',').map(f => parseFloat(f))
-    }
-  }
-
-  const model = await load(ifcURL.toString())
-  // const mesh = model.children[0]
-  // console.log('MODEL', model, mesh.geometry.attributes.position.array, mesh.material)
-  // mesh.material.wireframe = true
+  const [glCtx, renderer, scene, camera] = initThree()
+  const modelUrl = new URL(req.body.url)
+  const parsedUrl = parseUrl(modelUrl)
+  debug().log('server#post, parsedUrl:', parsedUrl)
+  const [px, py, pz, tx, ty, tz] = parseCamera(parsedUrl.params.c) || [0,0,0,0,0,0]
+  const targetUrl = parsedUrl.target.url
+  debug().log('server#post: calling load on parsedUrl.target:', targetUrl)
+  const model = await load(targetUrl)
+  debug().log('server#post, model:', model)
   scene.add(model)
-
-  // Normalize look and zoom to fit the model in the render frame using
-  // the same alg as Share.
   fitModelToFrame(renderer.domElement, scene, model, camera)
-
-  if (req.body.camera) {
-    coordinates = [
-      req.body.camera.cx, req.body.camera.cy, req.body.camera.cz,
-      req.body.camera.tx, req.body.camera.ty, req.body.camera.tz
-    ]
-  }
-
-  if (coordinates.length === 6) {
-    camera.position.set(coordinates[0], coordinates[1], coordinates[2])
-    camera.lookAt(coordinates[3], coordinates[4], coordinates[5])
-  }
-
+  camera.position.set(px, py, pz)
+  camera.lookAt(tx, ty, tz)
+  debug().log(`server#post, camera.pos(${px}, ${py}, ${pz}) target.pos(${tx}, ${ty}, ${tz})`)
   const useSsaa = false
-  doRender(renderer, scene, camera, useSsaa)
-
+  render(renderer, scene, camera, useSsaa)
   res.setHeader('content-type', 'image/png')
   captureScreenshot(glCtx).pipe(res)
 })
 
 app.listen(port, () => {
-  console.log(`Listening on 0.0.0.0:${port}`)
+  debug().log(`Listening on 0.0.0.0:${port}`)
 })

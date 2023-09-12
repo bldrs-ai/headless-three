@@ -1,19 +1,11 @@
 /**
- * Parses a BLDRS Share URL and returns its parameters
+ * Process URL to find common redirect targets and parse hash param.
  * @param {URL} url
  * @return {Object} Share URL object
  */
-export const parseURLFromBLDRS = (url) => {
+export function parseUrl(url) {
   if (url === undefined || url === null) {
     throw new Error('No URL provided')
-  }
-
-  if (url.hostname !== 'bldrs.ai') {
-    throw new Error('Non-BLDRS URL provided')
-  }
-
-  if (url.pathname.indexOf('/share/v/new') !== -1) {
-    throw new Error('Local imports are not supported')
   }
 
   const parsed = {
@@ -34,7 +26,7 @@ export const parseURLFromBLDRS = (url) => {
   if (url.pathname.indexOf('/share/v/p') !== -1) {
     parsed.type = 'url'
     parsed.target = {
-      url: new URL(url.pathname.substring('/v/p'.length), parsed.original)
+      url: parsed.original
     }
   }
 
@@ -54,4 +46,22 @@ export const parseURLFromBLDRS = (url) => {
   }
 
   return parsed
+}
+
+
+export function parseCoords(url) {
+  let c = [0,0,0,0,0,0]
+  if (url.hash) {
+    let params = url.hash.split('::')
+    const paramsList = url.hash.substring(1).split('::')
+    paramsList.forEach((p) => {
+      const [k, v] = p.split(':', 2)
+      params[k] = v
+    })
+    params = params
+    if ('c' in params) {
+      c = params['c'].split(',').map(f => parseFloat(f))
+    }
+  }
+  return c
 }
