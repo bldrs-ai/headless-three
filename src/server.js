@@ -80,6 +80,9 @@ app.post('/render', async (req, res) => {
   if (coordinates.length === 6) {
     camera.position.set(coordinates[0], coordinates[1], coordinates[2])
     camera.lookAt(coordinates[3], coordinates[4], coordinates[5])
+  } else {
+    camera.position.set(0, 0, 0)
+    camera.lookAt(0, 0, 0)
   }
 
   const useSsaa = false
