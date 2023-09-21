@@ -1,0 +1,25 @@
+{
+  "metadata": {
+    "version": 0.1,
+    "generator": "https://github.com/bldrs-ai/headless-three"
+  },
+  "scale": 1,
+  "objScale": 1,
+  "objects": [
+    {
+      "href": "obj/index.bld",
+      "scale": 1,
+      "pos": [0,0,0]
+    },
+    {
+      "href": "pdb/index.bld",
+      "scale": 0.4,
+      "pos": [5,4,5.5]
+    },
+    {
+      "href": "ifc/index.ifc",
+      "scale": 0.2,
+      "pos": [0,0,-5]
+    }
+  ]
+}

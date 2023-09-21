@@ -1,11 +1,15 @@
+import path from 'node:path'
 import * as THREE from 'three'
 import {
   fitModelToFrame,
   initThree,
   render,
   saveScreenshot,
-} from "./lib.js"
+  parseCamera,
+} from './lib.js'
 import {load} from './Loader.js'
+import {parseUrl} from './urls.js'
+import debug from './debug.js'
 
 
 if (process.argv.length < 3) {
@@ -15,7 +19,19 @@ if (process.argv.length < 3) {
 
 const [glCtx, renderer, scene, camera] = initThree()
 
-const model = await load(process.argv[2])
+const absPath = path.resolve(process.argv[2])
+const modelUrl = new URL('file:' + absPath)
+const parsedUrl = parseUrl(modelUrl)
+if (parsedUrl.target === undefined) {
+  console.error('Could not parse file arg')
+  process.exit(1)
+}
+
+const [px, py, pz, tx, ty, tz] = parseCamera(parsedUrl.params.c) || [0,0,0,0,0,0]
+debug().log(`headless#camera setting: camera.pos(${px}, ${py}, ${pz}) target.pos(${tx}, ${ty}, ${tz})`)
+const targetUrl = parsedUrl.target.url
+
+const model = await load(targetUrl)
 scene.add(model)
 // Materials can be accessed e.g.:
 //   model.material[0].transparent = true
@@ -25,16 +41,6 @@ scene.add(model)
 // the same alg as Share.
 fitModelToFrame(renderer.domElement, scene, model, camera)
 
-// Apply URL camera coords.
-const camCoordStr = process.argv[3]
-let cc = camCoordStr ? camCoordStr.split(',').map(x => parseFloat(x)) : [0, 0, 0, 0, 0, 0]
-const px = cc[0]
-const py = cc[1]
-const pz = cc[2]
-const tx = cc[3]
-const ty = cc[4]
-const tz = cc[5]
-console.log(`headless#camera setting: camera.pos(${px}, ${py}, ${pz}) target.pos(${tx}, ${ty}, ${tz})`)
 camera.position.set(px, py, pz)
 camera.lookAt(tx, ty, tz)
 

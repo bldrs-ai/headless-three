@@ -18,19 +18,21 @@ export function parseUrl(url) {
   const params = {}
   const paramsList = url.hash.substring(1).split('::')
   paramsList.forEach((p) => {
-    const [k, v] = p.split(':', 2)
+    const [k, v] = p.split(':')
     params[k] = v
   })
   parsed.params = params
 
   if (url.pathname.indexOf('/share/v/p') !== -1) {
-    parsed.type = 'url'
+    parsed.type = 'vcs:github'
     parsed.target = {
-      url: parsed.original
+      organization: org,
+      repository: repo,
+      ref: ref,
+      // HACK
+      url: new URL(`/bldrs-ai/Share/main/public/index.ifc`, 'https://raw.githubusercontent.com')
     }
-  }
-
-  if (url.pathname.indexOf('/share/v/gh') !== -1) {
+  } else if (url.pathname.indexOf('/share/v/gh') !== -1) {
     const p = url.pathname.substring('/share/v/gh'.length)
     const parts = p.substring(1).split('/')
     const [org, repo, ref] = parts
@@ -42,6 +44,11 @@ export function parseUrl(url) {
       repository: repo,
       ref: ref,
       url: new URL(`/${org}/${repo}/${ref}/${path}`, 'https://raw.githubusercontent.com')
+    }
+  } else {
+    parsed.type = 'url'
+    parsed.target = {
+      url: parsed.original
     }
   }
 
@@ -65,3 +72,4 @@ export function parseCoords(url) {
   }
   return c
 }
+

@@ -3,6 +3,10 @@ import fs from 'fs'
 import gl from 'gl'
 import {JSDOM} from 'jsdom'
 import {PNG} from 'pngjs'
+// import {Blob} from 'fetch-blob'
+import {Blob} from 'node:buffer'
+import url from 'node:url'
+// import Worker from 'web-worker'
 import * as THREE from 'three'
 import {EffectComposer} from 'three/addons/postprocessing/EffectComposer.js'
 import {SSAARenderPass} from 'three/addons/postprocessing/SSAARenderPass.js'
@@ -15,6 +19,32 @@ export function initDom() {
   const dom = new JSDOM(`<!DOCTYPE html>`, {pretendToBeVisual: true})
   global.window = dom.window
   global.document = window.document
+  global.self = global.window
+  global.Blob = Blob
+  global.self.URL = url.URL
+/*  console.log('url', url.URL)
+  class MyBlob {
+    constructor(buf) {
+      this.buf = buf[0]
+      // console.log('BUFFF', buf)
+    }
+  }
+  global.Blob = MyBlob
+  // console.log('Global Blob:', Blob)
+  global.self.URL = {
+    createObjectURL: (stuff) => {
+      const obj = Buffer.from(stuff.buf).toString('base64')
+      // console.log('createObjectURL: stuff.buf, obj', stuff, stuff.buf, obj)
+      const str = `data:image/png;base64,${obj}`
+      //global.Blob = Blob
+      // console.log(str)
+      return str
+    }
+  }
+*/
+
+  // console.log('Global URL:', URL, URL.createObjectURL)
+  //global.Worker = Worker
 
   // Needed by camera-controls
   global.DOMRect = class DOMRect {
@@ -161,4 +191,16 @@ export function render(renderer, scene, camera, useSsaa = false) {
   } else {
     renderer.render(scene, camera)
   }
+}
+
+
+/**
+ * Just splits the given string on ','.  TODO(pablo): combine with
+ * Share lib.
+ * @param {string} pStr
+ * @return {string}
+ */
+export function parseCamera(encodedCameraStr) {
+  const parts = encodedCameraStr.split(',').map((x) => parseFloat(x))
+  return parts.concat(new Array(6 - parts.length).fill(0))
 }
