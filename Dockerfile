@@ -1,7 +1,7 @@
 FROM node:16-slim AS builder
 
 RUN apt-get update && \
-    apt-get install -y git python3 build-essential libxi-dev libglu1-mesa-dev libglew-dev xvfb pkg-config && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y git python3 build-essential libxi-dev libglu1-mesa-dev libglew-dev xvfb pkg-config && \
     apt-get clean && \
     ln -s /usr/bin/python3 /usr/bin/python && \
     rm -rf /var/lib/apt/lists/*
@@ -20,7 +20,7 @@ FROM node:16-slim AS app
 ENV NODE_ENV production
 
 RUN apt-get update && \
-    apt-get install -y git mesa-utils xserver-xorg xvfb && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y git mesa-utils xserver-xorg xvfb && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 

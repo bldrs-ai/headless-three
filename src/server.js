@@ -1,4 +1,5 @@
 import express from 'express'
+import * as Sentry from '@sentry/node'
 import {
   fitModelToFrame,
   initThree,
@@ -13,12 +14,23 @@ import debug, {INFO} from './debug.js'
 
 const app = express()
 const port = 8001
+
+// Initialize and enable Sentry middleware
+// It must be the first middleware in the stack
+Sentry.init()
+app.use(Sentry.Handlers.requestHandler())
+
+// Enable JSON request body middleware
 app.use(express.json())
 app.post('/render', handler)
+app.get('/healthcheck', (req, res) => {
+  res.status(200).send()
+})
+// Install Sentry error handler after all routes but before any other error handlers
+app.use(Sentry.Handlers.errorHandler())
 app.listen(port, () => {
   debug(INFO).log(`Listening on 0.0.0.0:${port}`)
 })
-
 
 async function handler(req, res) {
   const [glCtx, renderer, scene, camera] = initThree()
