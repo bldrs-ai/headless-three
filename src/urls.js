@@ -32,13 +32,14 @@ export function parseUrl(url) {
 
   const baseUrl = url.origin == 'null' ? url : new URL(url.pathname, url.origin)
   const baseUrlStr = baseUrl.toString()
+  // console.log('matching:', baseUrlStr)
   matcher(
     baseUrlStr,
-    /https?:\/\/github.com\/(?<org>[\w-]+)\/(?<repo>[\w-]+)\/blob\/(?<ref>[\w-]+)\/(?<path>[\w\/.-]+)/
+    /https?:\/\/github.com\/(?<org>[\w%.-]+)\/(?<repo>[\w%.-]+)\/blob\/(?<ref>[\w%.-]+)\/(?<path>[\w\/%.-]+)/
   )
     .then((match) => {
-      parsed.type = 'vcs:github'
       const {org, repo, ref, path} = match.groups
+      parsed.type = 'vcs:github'
       parsed.target = {
         organization: org,
         repository: repo,
@@ -46,10 +47,10 @@ export function parseUrl(url) {
         url: new URL(`/${org}/${repo}/${ref}/${path}`, 'https://raw.githubusercontent.com')
       }
     })
-    .or(/\/share\/v\/gh\/(?<org>[\w-]+)\/(?<repo>\w+)\/(?<ref>\w+)\/(?<path>[\w\/.]+)/)
+    .or(/\/share\/v\/gh\/(?<org>[\w.-]+)\/(?<repo>[\w.-]+)\/(?<ref>[\w.-]+)\/(?<path>[\w\/%.-]+)/)
     .then((match) => {
-      parsed.type = 'vcs:github'
       const {org, repo, ref, path} = match.groups
+      parsed.type = 'vcs:github'
       parsed.target = {
         organization: org,
         repository: repo,
@@ -68,6 +69,7 @@ export function parseUrl(url) {
       }
     })
     .or(() => {
+      // TODO(pablo): this case is buggy/not being called
       parsed.type = 'url'
       parsed.target = {
         url: parsed.original
