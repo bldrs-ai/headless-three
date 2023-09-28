@@ -1,9 +1,9 @@
 /* eslint-disable no-unused-vars */
-const OFF = 4
-const ERROR = 3
-const WARN = 2 // Use this as default for prod.  Should never see these messages.
-const INFO = 1
-const DEBUG = 0
+export const OFF = 4
+export const ERROR = 3
+export const WARN = 2 // Use this as default for prod.  Should never see these messages.
+export const INFO = 1
+export const DEBUG = 0
 /* eslint-enable no-unused-vars */
 let DEBUG_LEVEL = WARN
 
@@ -14,7 +14,7 @@ let DEBUG_LEVEL = WARN
  * @param {number} level Default is INFO.
  * @return {Function} returned function is console.log or a no-op if debugging is turned off
  */
-export default function debug(level = INFO) {
+export default function debug(level = DEBUG) {
   return level >= DEBUG_LEVEL ? console : mockLog
 }
 

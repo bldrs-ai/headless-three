@@ -44,3 +44,8 @@ To run the server locally, you will need a working Docker installation.
         -H 'content-type: application/json' \
         -o rendered.png \
         http://localhost:8001/render
+
+### Local Server Test script
+```
+for f in `ls models/*/*.{bld,fbx,ifc,obj,stl,pdb,xyz}` ; do curl -f -d "{\"url\": \"http://localhost:8090/$f\"}"     -H 'content-type: application/json'     -o "$f"-fit.png --fail --silent --show-error  -D- http://localhost:8001/render > log ; grep -q '200 OK' log || /bin/mv -f log $f.err ; done
+```

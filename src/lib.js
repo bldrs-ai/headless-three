@@ -1,8 +1,11 @@
-import CameraControls from 'camera-controls'
 import fs from 'fs'
 import gl from 'gl'
 import {JSDOM} from 'jsdom'
 import {PNG} from 'pngjs'
+// import {Blob} from 'fetch-blob'
+import {Blob} from 'node:buffer'
+import url from 'node:url'
+// import Worker from 'web-worker'
 import * as THREE from 'three'
 import {EffectComposer} from 'three/addons/postprocessing/EffectComposer.js'
 import {SSAARenderPass} from 'three/addons/postprocessing/SSAARenderPass.js'
@@ -15,6 +18,32 @@ export function initDom() {
   const dom = new JSDOM(`<!DOCTYPE html>`, {pretendToBeVisual: true})
   global.window = dom.window
   global.document = window.document
+  global.self = global.window
+  global.Blob = Blob
+  global.self.URL = url.URL
+/*  console.log('url', url.URL)
+  class MyBlob {
+    constructor(buf) {
+      this.buf = buf[0]
+      // console.log('BUFFF', buf)
+    }
+  }
+  global.Blob = MyBlob
+  // console.log('Global Blob:', Blob)
+  global.self.URL = {
+    createObjectURL: (stuff) => {
+      const obj = Buffer.from(stuff.buf).toString('base64')
+      // console.log('createObjectURL: stuff.buf, obj', stuff, stuff.buf, obj)
+      const str = `data:image/png;base64,${obj}`
+      //global.Blob = Blob
+      // console.log(str)
+      return str
+    }
+  }
+*/
+
+  // console.log('Global URL:', URL, URL.createObjectURL)
+  //global.Worker = Worker
 
   // Needed by camera-controls
   global.DOMRect = class DOMRect {
@@ -77,6 +106,18 @@ export function initLights(scene) {
 }
 
 
+export function initThree(w = 1024, h = 768) {
+  const aspect = w / h
+  const dom = initDom()
+  const glCtx = initGl(w, h)
+  const renderer = initRenderer(glCtx, w, h)
+  const scene = new THREE.Scene()
+  initLights(scene)
+  const camera = initCamera(45, aspect)
+  return [glCtx, renderer, scene, camera]
+}
+
+
 /** Reads the pixels from the gl screen, then writes them as PNG data. */
 export function captureScreenshot(glCtx) {
   const width = glCtx.drawingBufferWidth
@@ -114,17 +155,35 @@ export function saveScreenshot(glCtx, outputFilename = 'screenshot.png') {
 
 /** Uses camera-controls library to zoom the camera to fill dom view with the model. */
 export function fitModelToFrame(domElement, scene, model, camera) {
-  const box = new THREE.Box3().setFromObject(model)
+  const boundingBox = new THREE.Box3().setFromObject(model)
   const sceneSize = new THREE.Vector3()
-  box.getSize(sceneSize)
+  boundingBox.getSize(sceneSize)
   const sceneCenter = new THREE.Vector3()
-  box.getCenter(sceneCenter)
-  const nearFactor = 0.5
-  const radius = Math.max(sceneSize.x, sceneSize.y, sceneSize.z) * nearFactor
-  const sphere = new THREE.Sphere(sceneCenter, radius)
-  CameraControls.install( { THREE: THREE } )
-  const cameraControls = new CameraControls(camera, domElement)
-  cameraControls.fitToSphere(sphere, true)
+  boundingBox.getCenter(sceneCenter)
+
+  /*
+  const helper = new THREE.Box3Helper(boundingBox, 0x000000)
+  scene.add(helper)
+  */
+
+  function radFromDeg(degrees) {
+    return (degrees * Math.PI) / 180
+  }
+  const halfAngle = radFromDeg(camera.fov / 2)
+  const tanOfHalfY = Math.tan(halfAngle)
+  const tanOfHalfX = tanOfHalfY * camera.aspect
+  const halfOfBBWidth = sceneSize.x / 2
+  const halfOfBBHeight = sceneSize.y / 2
+  const zDistX = halfOfBBWidth / tanOfHalfX
+  const zDistY = halfOfBBHeight / tanOfHalfY
+  const zDist = Math.max(zDistX, zDistY)
+  const frontOfBBRelToOrigin = sceneSize.z
+  const move = new THREE.Vector3(sceneCenter.x, sceneCenter.y, sceneCenter.z + ( ( sceneSize.z / 2 ) + zDist ) )
+  camera.position.set(move.x, move.y, move.z)
+  const cx = camera.position.x
+  const cy = camera.position.y
+  const cz = camera.position.z
+  // console.log(`halfAngle(${halfAngle}), tanOfHalfY(${tanOfHalfY}), tanOfHalfX(${tanOfHalfX}), halfOfBBWidth(${halfOfBBWidth}), halfOfBBHeight(${halfOfBBHeight}) camera.position:`, cx, cy, cz)
 }
 
 
@@ -132,7 +191,7 @@ export function fitModelToFrame(domElement, scene, model, camera) {
  * Just calls renderer.render, or does an experimental
  * post-processing if useSsaa is true.
  */
-export function doRender(renderer, scene, camera, useSsaa = false) {
+export function render(renderer, scene, camera, useSsaa = false) {
   if (useSsaa) {
     const composer = new EffectComposer(renderer)
     composer.setPixelRatio(window.devicePixelRatio || 1)
@@ -149,4 +208,16 @@ export function doRender(renderer, scene, camera, useSsaa = false) {
   } else {
     renderer.render(scene, camera)
   }
+}
+
+
+/**
+ * Just splits the given string on ','.  TODO(pablo): combine with
+ * Share lib.
+ * @param {string} pStr
+ * @return {string}
+ */
+export function parseCamera(encodedCameraStr) {
+  const parts = encodedCameraStr.split(',').map((x) => parseFloat(x))
+  return parts.concat(new Array(6 - parts.length).fill(0))
 }

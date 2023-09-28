@@ -1,0 +1,78 @@
+{
+  "metadata": {
+    "version": 0.1,
+    "generator": "https://github.com/bldrs-ai/headless-three"
+  },
+  "scale": 0.9,
+  "objScale": 0.0005,
+  "objects": [
+    {
+      "href": "Al2O3.pdb",
+      "pos": [0, 0, 0]
+    },
+    {
+      "href": "aspirin.pdb",
+      "pos": [0, 0, 1]
+    },
+    {
+      "href": "caffeine.pdb",
+      "pos": [0, 1, 0]
+    },
+    {
+      "href": "cocaine.pdb",
+      "pos": [0, 1, 1]
+    },
+    {
+      "href": "buckyball.pdb",
+      "pos": [1, 0, 0]
+    },
+    {
+      "href": "cholesterol.pdb",
+      "pos": [1, 0, 1]
+    },
+    {
+      "href": "cu.pdb",
+      "pos": [1, 1, 0]
+    },
+    {
+      "href": "cubane.pdb",
+      "pos": [1, 1, 1]
+    },
+    {
+      "href": "diamond.pdb",
+      "pos": [0, 0, 2]
+    },
+    {
+      "href": "ethanol.pdb",
+      "pos": [0, 1, 2]
+    },
+    {
+      "href": "glucose.pdb",
+      "pos": [0, 2, 2]
+    },
+    {
+      "href": "graphite.pdb",
+      "pos": [1, 0, 2]
+    },
+    {
+      "href": "lsd.pdb",
+      "pos": [1, 1, 2]
+    },
+    {
+      "href": "lycopene.pdb",
+      "pos": [0, 2, 2]
+    },
+    {
+      "href": "nacl.pdb",
+      "pos": [1, 2, 2]
+    },
+    {
+      "href": "nicotine.pdb",
+      "pos": [2, 2, 2]
+    },
+    {
+      "href": "ybco.pdb",
+      "pos": [0, 0, 3]
+    }
+  ]
+}

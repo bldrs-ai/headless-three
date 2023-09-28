@@ -1,0 +1,43 @@
+{
+  "metadata": {
+    "version": 0.1,
+    "generator": "https://github.com/bldrs-ai/headless-three"
+  },
+  "objects": [
+    {
+      "href": "models/obj/Bunny.obj"
+    },
+    {
+      "href": "models/obj/Bunny.obj",
+      "pos": [0, 0, 0]
+    },
+    {
+      "href": "models/obj/Bunny.obj",
+      "pos": [0, 0, 5]
+    },
+    {
+      "href": "models/obj/Bunny.obj",
+      "pos": [0, 5, 0]
+    },
+    {
+      "href": "models/obj/Bunny.obj",
+      "pos": [0, 5, 5]
+    },
+    {
+      "href": "models/obj/Bunny.obj",
+      "pos": [5, 0, 0]
+    },
+    {
+      "href": "models/obj/Bunny.obj",
+      "pos": [5, 0, 5]
+    },
+    {
+      "href": "models/obj/Bunny.obj",
+      "pos": [5, 5, 0]
+    },
+    {
+      "href": "models/obj/Bunny.obj",
+      "pos": [5, 5, 5]
+    }
+  ]
+}

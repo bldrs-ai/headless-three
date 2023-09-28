@@ -1,64 +1,77 @@
+import path from 'node:path'
 import * as THREE from 'three'
 import {
-  doRender,
   fitModelToFrame,
-  initCamera,
-  initDom,
-  initGl,
-  initLights,
-  initRenderer,
+  initThree,
+  render,
   saveScreenshot,
-} from "./lib.js"
+  parseCamera,
+} from './lib.js'
 import {load} from './Loader.js'
+import {parseUrl} from './urls.js'
+import debug from './debug.js'
+import {supportedTypesUsageStr} from './Filetype.js'
 
 
 if (process.argv.length < 3) {
-  console.error('Usage: node headless.js <file:///path/to/file.(ifc|obj)> <cx,cy,cz,tx,ty,tz>')
+  console.error(
+    `Usage: node src/headless.js <path/to/file>[#c:px,py,pz[,tx,ty,tz]]\n\n` +
+    `Supported types: ${supportedTypesUsageStr}`
+  )
   process.exit(1)
 }
 
-const w = 1024, h = 768
-const aspect = w / h
-const dom = initDom()
-const glCtx = initGl(w, h)
-const renderer = initRenderer(glCtx, w, h)
-const scene = new THREE.Scene()
+const argPath = process.argv[2]
 
+let modelUrl
+let hash
+try {
+  modelUrl = new URL(argPath)
+  hash = modelUrl.hash
+} catch (e) {
+  // Try interpreting it as a file
+  const argPathParts  = argPath.split('#')
+  const pathname = path.resolve(argPathParts[0])
+  hash = argPathParts.length == 2 ? '#' + argPathParts[1] : ''
+  try {
+    modelUrl = new URL(`file:${pathname}${hash}`)
+  } catch(e) {
+    console.error('Could not convert file arg to url for parsing:', firstBit)
+    process.exit(1)
+  }
+}
 
-initLights(scene)
+let parsedUrl = parseUrl(modelUrl)
+console.log(`modelUrl(${modelUrl}), parsed:`, parsedUrl)
 
+if (parsedUrl.target && parsedUrl.target.url) {
+  parsedUrl = parsedUrl.target.url
+} else {
+  parsedUrl = parsedUrl.original
+}
 
-const camera = initCamera(45, aspect)
+const [glCtx, renderer, scene, camera] = initThree()
 
-const model = await load(process.argv[2])
+const model = await load(parsedUrl)
 scene.add(model)
+scene.add(new THREE.AxesHelper)
 // Materials can be accessed e.g.:
 //   model.material[0].transparent = true
 //   model.material[0].opacity = 0.1
 
-
-// Normalize look and zoom to fit the model in the render frame using
-// the same alg as Share.
-fitModelToFrame(renderer.domElement, scene, model, camera)
-
-
-// Apply URL camera coords.
-const camCoordStr = process.argv[3]
-let cc = camCoordStr ? camCoordStr.split(',').map(x => parseFloat(x)) : [0, 0, 0, 0, 0, 0]
-const px = cc[0]
-const py = cc[1]
-const pz = cc[2]
-const tx = cc[3]
-const ty = cc[4]
-const tz = cc[5]
-camera.position.set(px, py, pz)
-camera.lookAt(tx, ty, tz)
-
+if (hash) {
+  const [px, py, pz, tx, ty, tz] = parseCamera(parsedUrl.params.c) || [0,0,0,0,0,0]
+  debug().log(`headless#camera setting: camera.pos(${px}, ${py}, ${pz}) target.pos(${tx}, ${ty}, ${tz})`)
+  camera.position.set(px, py, pz)
+  camera.lookAt(tx, ty, tz)
+} else {
+  fitModelToFrame(renderer.domElement, scene, model, camera)
+}
 
 // headless gl has some rendering issues, e.g. no-AA
 // See https://github.com/stackgl/headless-gl/issues/30
 const useSsaa = false
-doRender(renderer, scene, camera, useSsaa)
+render(renderer, scene, camera, useSsaa)
 
 
 saveScreenshot(glCtx)

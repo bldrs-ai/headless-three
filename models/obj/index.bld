@@ -1,0 +1,17 @@
+{
+  "metadata": {
+    "version": 0.1,
+    "generator": "https://github.com/bldrs-ai/headless-three"
+  },
+  "objects": [
+    {
+      "href": "Bunny.obj",
+      "scale": 0.5,
+      "pos": [2,0,0]
+    },
+    {
+      "href": "tree.obj",
+      "scale": 5
+    }
+  ]
+}

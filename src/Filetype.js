@@ -1,4 +1,7 @@
-export const supportedTypes = ['ifc', 'obj']
+// TODO: 3dm, glb
+export const supportedTypes = ['bld', 'fbx', 'ifc', 'obj', 'stl', 'pdb', 'xyz']
+
+export const supportedTypesUsageStr = `${supportedTypes.join(',')}`
 
 
 /** Make a non-capturing group of a choice of filetypes. */
@@ -42,7 +45,7 @@ export function pathSuffixSupported(pathWithSuffix) {
 export function splitAroundExtension(filepath) {
   const match = fileSuffixRegex.exec(filepath)
   if (!match) {
-    throw new FilenameParseError(`Filepath must contain ".${typeRegexStr}" (case-insensitive)`)
+    throw new FilenameParseError(`Filepath(${filepath}) must contain ".${typeRegexStr}" (case-insensitive)`)
   }
   const parts = filepath.split(fileSuffixRegex)
   return {parts, extension: match[0]}
