@@ -1,14 +1,7 @@
-export const supportedTypes = [
-  'bld',
-//  '3dm',
-  'fbx',
-  'ifc',
-  'obj',
-//  'glb',
-  'stl',
-  'pdb',
-  'xyz'
-]
+// TODO: 3dm, glb
+export const supportedTypes = ['bld', 'fbx', 'ifc', 'obj', 'stl', 'pdb', 'xyz']
+
+export const supportedTypesUsageStr = `${supportedTypes.join(',')}`
 
 
 /** Make a non-capturing group of a choice of filetypes. */

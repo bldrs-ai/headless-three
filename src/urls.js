@@ -1,3 +1,6 @@
+import matcher from './matcher.js'
+
+
 /**
  * Process URL to find common redirect targets and parse hash param.
  * @param {URL} url
@@ -23,35 +26,53 @@ export function parseUrl(url) {
   })
   parsed.params = params
 
-  if (url.pathname.indexOf('/share/v/p') !== -1) {
-    parsed.type = 'vcs:github'
-    parsed.target = {
-      organization: org,
-      repository: repo,
-      ref: ref,
-      // HACK
-      url: new URL(`/bldrs-ai/Share/main/public/index.ifc`, 'https://raw.githubusercontent.com')
-    }
-  } else if (url.pathname.indexOf('/share/v/gh') !== -1) {
-    const p = url.pathname.substring('/share/v/gh'.length)
-    const parts = p.substring(1).split('/')
-    const [org, repo, ref] = parts
-    const path = parts.slice(3).join('/')
-
-    parsed.type = 'vcs:github'
-    parsed.target = {
-      organization: org,
-      repository: repo,
-      ref: ref,
-      url: new URL(`/${org}/${repo}/${ref}/${path}`, 'https://raw.githubusercontent.com')
-    }
-  } else {
-    parsed.type = 'url'
-    parsed.target = {
-      url: parsed.original
-    }
+  function apply(str, re) {
+    return re.match(str)
   }
 
+  const baseUrl = url.origin == 'null' ? url : new URL(url.pathname, url.origin)
+  const baseUrlStr = baseUrl.toString()
+  matcher(
+    baseUrlStr,
+    /https?:\/\/github.com\/(?<org>[\w-]+)\/(?<repo>[\w-]+)\/blob\/(?<ref>[\w-]+)\/(?<path>[\w\/.-]+)/
+  )
+    .then((match) => {
+      parsed.type = 'vcs:github'
+      const {org, repo, ref, path} = match.groups
+      parsed.target = {
+        organization: org,
+        repository: repo,
+        ref: ref,
+        url: new URL(`/${org}/${repo}/${ref}/${path}`, 'https://raw.githubusercontent.com')
+      }
+    })
+    .or(/\/share\/v\/gh\/(?<org>[\w-]+)\/(?<repo>\w+)\/(?<ref>\w+)\/(?<path>[\w\/.]+)/)
+    .then((match) => {
+      parsed.type = 'vcs:github'
+      const {org, repo, ref, path} = match.groups
+      parsed.target = {
+        organization: org,
+        repository: repo,
+        ref: ref,
+        url: new URL(`/${org}/${repo}/${ref}/${path}`, 'https://raw.githubusercontent.com')
+      }
+    })
+    .or(/\/share\/v\/p\/index.ifc/)
+    .then((match) => {
+      parsed.type = 'vcs:github'
+      parsed.target = {
+        organization: 'bldrs-ai',
+        repository: 'Share',
+        ref: 'main',
+        url: new URL(`/bldrs-ai/Share/main/public/index.ifc`, 'https://raw.githubusercontent.com')
+      }
+    })
+    .or(() => {
+      parsed.type = 'url'
+      parsed.target = {
+        url: parsed.original
+      }
+    })
   return parsed
 }
 

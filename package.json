@@ -3,6 +3,7 @@
   "main": "src/headless.js",
   "scripts": {
     "build": "cd node_modules/web-ifc-three/web-ifc-three && node build.esb.js",
+    "serve": "node src/server.js",
     "test": "jest"
   },
   "dependencies": {

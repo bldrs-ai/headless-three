@@ -69,15 +69,21 @@ export async function readToBuffer(url, isFileOrigin, isFormatText) {
       sourceBuffer = Uint8Array.from(sourceBuffer).buffer
     }
   } else {
-    sourceBuffer = await axios.get(url.toString(), { responseType: 'arraybuffer' })
+    sourceBuffer = await axios.get(
+      url.toString(),
+      { responseType:
+        isFormatText
+        ? 'text'
+        : 'arraybuffer' }
+    )
+    sourceBuffer = sourceBuffer.data
   }
   return sourceBuffer
 }
 
 
 async function readModel(loader, basePath, sourceBuffer, isLoaderAsync) {
-  debug().log(`Loader#readModel: loader(${loader.constructor.name}) basePath(${basePath}) isAsync(${isLoaderAsync}), data:`,
-              toShortStr(sourceBuffer))
+  debug().log(`Loader#readModel: loader(${loader.constructor.name}) basePath(${basePath}) isAsync(${isLoaderAsync}), data type: `, typeof sourceBuffer)
   let model
   /* GLB
     model = await new Promise((resolve, reject) => {

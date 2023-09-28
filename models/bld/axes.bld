@@ -6,39 +6,11 @@
   "objects": [
     {
       "id": 0,
-      "href": "models/obj/Bunny.obj"
+      "href": "../obj/Bunny.obj"
     },
     {
-      "id": 0,
-      "href": "models/obj/Bunny.obj#c:0,0,0"
-    },
-    {
-      "id": 0,
-      "href": "models/obj/Bunny.obj#c:0,0,5"
-    },
-    {
-      "id": 0,
-      "href": "models/obj/Bunny.obj#c:0,5,0"
-    },
-    {
-      "id": 0,
-      "href": "models/obj/Bunny.obj#c:0,5,5"
-    },
-    {
-      "id": 0,
-      "href": "models/obj/Bunny.obj#c:5,0,0"
-    },
-    {
-      "id": 0,
-      "href": "models/obj/Bunny.obj#c:5,0,5"
-    },
-    {
-      "id": 0,
-      "href": "models/obj/Bunny.obj#c:5,5,0"
-    },
-    {
-      "id": 0,
-      "href": "models/obj/Bunny.obj#c:5,5,5"
+      "href": "#0",
+      "pos": [1,1,1]
     }
   ]
 }
