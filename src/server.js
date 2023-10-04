@@ -60,7 +60,7 @@ async function handler(req, res) {
   }
   const [px, py, pz, tx, ty, tz] = parsedUrl.params.c ? parseCamera(parsedUrl.params.c) : [0,0,0,0,0,0]
   const targetUrl = parsedUrl.target.url
-  // debug().log('server#post: calling load on parsedUrl.target:', targetUrl)
+  debug().log('server#post: calling load on parsedUrl.target:', targetUrl)
   let model
   try {
     model = await load(targetUrl)

@@ -57,4 +57,20 @@ e/Examples/Wall%20standard%20case/File.ifc')
         },
       })
   })
+
+
+  it('parses localhost file ref', () => {
+    const url = new URL('https://localhost.8090/models/bld/mix.bld')
+    const parsed = parseUrl(url)
+    expect(parsed).toStrictEqual({
+        original: url,
+        type: 'url',
+        target: {
+          url: url
+        },
+        params: {
+          "": undefined,
+        },
+      })
+  })
 })

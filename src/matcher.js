@@ -30,30 +30,21 @@ class Matcher {
 
 
   test(regex) {
-    // console.log('test')
     this.match = this.str.match(regex)
     return this
   }
 
 
   then(cb) {
-    // console.log('then')
     if (this.match && !this.thenCalled) {
       cb(this.match)
+      this.thenCalled = true
     }
-    this.thenCalled = true
-    return this
-  }
-
-
-  noop() {
-    // console.log('noop')
     return this
   }
 
 
   or(regexOrElse) {
-    // console.log('or')
     if (regexOrElse instanceof RegExp) {
       if (this.match) {
         return this
