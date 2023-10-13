@@ -11,7 +11,9 @@ import {XYZLoader} from 'three/addons/loaders/XYZLoader.js'
 import {IFCLoader} from 'web-ifc-three/web-ifc-three/dist/web-ifc-three.js'
 import BLDLoader from './BLDLoader.js'
 import * as Filetype from './Filetype.js'
+import {assertDefined, assertTrue} from './assert.js'
 import debug from './debug.js'
+import {maybeResolveLocalPath} from './urls.js'
 import './fetch-polyfill.js'
 import glbToThree from './glb.js'
 import pdbToThree from './pdb.js'
@@ -29,6 +31,9 @@ export async function load(
   onUnknownType = (errEvent) => {debug().error(errEvent)},
   onError = (errEvent) => {debug().error('Loaders#load: error: ', errEvent)}
 ) {
+  url = maybeResolveLocalPath(url) || url
+  assertDefined(url, onProgress, onUnknownType, onError)
+  assertTrue(url instanceof URL)
   debug().log('Loader#load: url:', url)
 
   const isFileOrigin = url.protocol === 'file:'
@@ -57,6 +62,8 @@ export async function load(
 
 
 export async function readToBuffer(url, isFileOrigin, isFormatText) {
+  assertDefined(url)
+  assertTrue(url instanceof URL)
   let sourceBuffer
   if (isFileOrigin) {
     debug().log('Loader#readToBuffer: loading local file')

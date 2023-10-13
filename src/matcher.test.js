@@ -54,7 +54,7 @@ describe('matcher', () => {
     const cb = jest.fn()
     const fail = jest.fn()
     matcher(
-      'https://localhost8090/models/bld/mix.bld',
+      'https://localhost:8090/models/bld/mix.bld',
       /dontmatch/)
       .then(fail)
       .or(cb)

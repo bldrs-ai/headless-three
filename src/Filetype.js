@@ -1,3 +1,6 @@
+import {assertDefined} from './assert.js'
+
+
 // TODO: 3dm, glb
 export const supportedTypes = ['bld', 'fbx', 'ifc', 'obj', 'stl', 'pdb', 'xyz']
 
@@ -43,6 +46,7 @@ export function pathSuffixSupported(pathWithSuffix) {
  * @return {{parts: Array.<string>, extension: string}}
  */
 export function splitAroundExtension(filepath) {
+  assertDefined(filepath)
   const match = fileSuffixRegex.exec(filepath)
   if (!match) {
     throw new FilenameParseError(`Filepath(${filepath}) must contain ".${typeRegexStr}" (case-insensitive)`)

@@ -8,7 +8,7 @@ describe('Loader', () => {
     const onUnknownType =  jest.fn()
     const onError =  jest.fn()
     const model = await load(
-      'models/index.ifc',
+      'models/ifc/index.ifc',
       onProgress,
       onUnknownType,
       onError
@@ -27,7 +27,7 @@ describe('Loader', () => {
     const onUnknownType =  jest.fn()
     const onError =  jest.fn()
     const model = await load(
-      'models/Bunny.obj',
+      'models/obj/Bunny.obj',
       onProgress,
       onUnknownType,
       onError
