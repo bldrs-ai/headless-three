@@ -34,26 +34,36 @@ export async function load(
   url = maybeResolveLocalPath(url) || url
   assertDefined(url, onProgress, onUnknownType, onError)
   assertTrue(url instanceof URL)
-  debug().log('Loader#load: url:', url)
 
-  const isFileOrigin = url.protocol === 'file:'
-  const pathname = url.pathname
-  const [loader, isLoaderAsync, isFormatText, fixupCb] = await findLoader(pathname)
-  debug().log(`Loader#load, pathname(${pathname}), loader:`, loader.constructor)
+  const [loader, isLoaderAsync, isFormatText, fixupCb] = await findLoader(url.pathname)
+  debug().log(
+    `Loader#load, pathname=${url.pathname} loader=${loader.constructor.name} isLoaderAsync=${isLoaderAsync} isFormatText=${isFormatText}`)
 
   if (loader === undefined) {
     onUnknownType()
     return undefined
   }
 
-  const sourceBuffer = await readToBuffer(url, isFileOrigin, isFormatText)
+  let modelData = (await axios.get(
+    url.toString(),
+    { responseType:
+      isFormatText
+      ? 'text'
+      : 'arraybuffer' }
+  )).data
 
-  const basePath = pathname.substring(0, pathname.lastIndexOf('/'))
-  let model = await readModel(loader, basePath, sourceBuffer, isLoaderAsync)
-  // debug().log('Loader#load: result', model)
+  // In headless mode, this is a Node Buffer.  Convert to js
+  // ArrayBuffer for local/network agnostic handling.
+  if (modelData instanceof Buffer) {
+    modelData = modelData.buffer.slice(modelData.byteOffset, modelData.byteOffset + modelData.length)
+  }
+
+  // Provide basePath for multi-file models.  Keep the last '/' for
+  // correct resolution of subpaths with '../'.
+  const basePath = url.href.substring(0, url.href.lastIndexOf('/') + 1)
+  let model = await readModel(loader, modelData, basePath, isLoaderAsync)
 
   if (fixupCb) {
-    // debug().log('Calling fixup: ', fixupCb, model)
     model = fixupCb(model)
   }
 
@@ -61,42 +71,14 @@ export async function load(
 }
 
 
-export async function readToBuffer(url, isFileOrigin, isFormatText) {
-  assertDefined(url)
-  assertTrue(url instanceof URL)
-  let sourceBuffer
-  if (isFileOrigin) {
-    debug().log('Loader#readToBuffer: loading local file')
-    if (isFormatText) {
-      debug().log('Loader#readToBuffer: isLocalFile:', false)
-      sourceBuffer = fs.readFileSync(decodeURI(url.pathname),  {encoding: 'utf-8'})
-    } else {
-      debug().log('Loader#readToBuffer: isLocalFile:', true)
-      sourceBuffer = fs.readFileSync(decodeURI(url.pathname))
-      sourceBuffer = Uint8Array.from(sourceBuffer).buffer
-    }
-  } else {
-    sourceBuffer = await axios.get(
-      url.toString(),
-      { responseType:
-        isFormatText
-        ? 'text'
-        : 'arraybuffer' }
-    )
-    sourceBuffer = sourceBuffer.data
-  }
-  return sourceBuffer
-}
-
-
-async function readModel(loader, basePath, sourceBuffer, isLoaderAsync) {
-  debug().log(`Loader#readModel: loader(${loader.constructor.name}) basePath(${basePath}) isAsync(${isLoaderAsync}), data type: `, typeof sourceBuffer)
+async function readModel(loader, modelData, basePath, isLoaderAsync) {
+  // debug().log(`Loader#readModel: loader(${loader.constructor.name}) basePath(${basePath}) isAsync(${isLoaderAsync}), data type: `, typeof modelData)
   let model
   /* GLB
     model = await new Promise((resolve, reject) => {
       debug().log('Loader#readModel: promise in')
       try {
-        loader.parse(sourceBuffer, './', (m) => {
+        loader.parse(modelData, './', (m) => {
           // debug().log('Loader#readModel: promise: model:', m)
           resolve(m)
         }, (err) => {
@@ -110,9 +92,9 @@ async function readModel(loader, basePath, sourceBuffer, isLoaderAsync) {
       // debug().log('Loader#readModel: promise out, model:', model)
       */
   if (isLoaderAsync) {
-    model = await loader.parse(sourceBuffer, basePath)
+    model = await loader.parse(modelData, basePath)
   } else {
-    model = loader.parse(sourceBuffer, basePath)
+    model = loader.parse(modelData, basePath)
   }
   if (!model) {
     throw new Error('Loader could not read model')
@@ -124,7 +106,6 @@ async function readModel(loader, basePath, sourceBuffer, isLoaderAsync) {
 
 async function delegateLoad(url) {
   const urlStr = url.toString()
-  debug().log('Delegated load:', urlStr)
   return await new Promise((resolve, reject) => {
     loader.load(
       urlStr,
@@ -183,7 +164,7 @@ async function findLoader(pathname) {
     case '.stl': {
       loader = new STLLoader
       fixupCb = stlToThree
-      // depends isFormatText = true
+      isFormatText = false
       break
     }
     case '.xyz': {
