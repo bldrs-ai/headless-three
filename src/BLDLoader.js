@@ -15,16 +15,8 @@ export default class BLDLoader {
       root.scale.setScalar(model.scale)
     }
 
-    const axes = new AxesHelper()
-    root.add(axes)
-
     for (let objRef of model.objects) {
-      let subPath = objRef.href
-      if (basePath) {
-        subPath = `${basePath}/${subPath}`
-      }
-      const hrefUrl = new URL(`file:${subPath}`)
-      const subModel = await load(hrefUrl)
+      const subModel = await load(new URL(objRef.href, basePath))
       root.add(subModel)
 
       if (objRef.pos) {

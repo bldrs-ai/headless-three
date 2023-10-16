@@ -5,12 +5,11 @@
   },
   "objects": [
     {
-      "id": 0,
-      "href": "models/obj/Bunny.obj"
+      "href": "http://localhost:8090/models/obj/Bunny.obj"
     },
     {
-      "id": 0,
-      "href": "models/pdb/buckyball.pdb"
+      "href": "../pdb/buckyball.pdb",
+      "scale": 0.01
     }
   ]
 }

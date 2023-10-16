@@ -1,4 +1,11 @@
+import path from 'node:path'
 import matcher from './matcher.js'
+
+
+export const SOURCE_TYPE = {
+  URL: 1,
+  VCS: 2
+}
 
 
 /**
@@ -32,14 +39,13 @@ export function parseUrl(url) {
 
   const baseUrl = url.origin == 'null' ? url : new URL(url.pathname, url.origin)
   const baseUrlStr = baseUrl.toString()
-  // console.log('matching:', baseUrlStr)
   matcher(
     baseUrlStr,
     /https?:\/\/github.com\/(?<org>[\w%.-]+)\/(?<repo>[\w%.-]+)\/blob\/(?<ref>[\w%.-]+)\/(?<path>[\w\/%.-]+)/
   )
     .then((match) => {
       const {org, repo, ref, path} = match.groups
-      parsed.type = 'vcs:github'
+      parsed.type = SOURCE_TYPE.VCS
       parsed.target = {
         organization: org,
         repository: repo,
@@ -50,7 +56,7 @@ export function parseUrl(url) {
     .or(/\/share\/v\/gh\/(?<org>[\w.-]+)\/(?<repo>[\w.-]+)\/(?<ref>[\w.-]+)\/(?<path>[\w\/%.-]+)/)
     .then((match) => {
       const {org, repo, ref, path} = match.groups
-      parsed.type = 'vcs:github'
+      parsed.type = SOURCE_TYPE.VCS
       parsed.target = {
         organization: org,
         repository: repo,
@@ -60,7 +66,7 @@ export function parseUrl(url) {
     })
     .or(/\/share\/v\/p\/index.ifc/)
     .then((match) => {
-      parsed.type = 'vcs:github'
+      parsed.type = SOURCE_TYPE.VCS
       parsed.target = {
         organization: 'bldrs-ai',
         repository: 'Share',
@@ -69,8 +75,7 @@ export function parseUrl(url) {
       }
     })
     .or(() => {
-      // TODO(pablo): this case is buggy/not being called
-      parsed.type = 'url'
+      parsed.type = SOURCE_TYPE.URL
       parsed.target = {
         url: parsed.original
       }
@@ -96,3 +101,27 @@ export function parseCoords(url) {
   return c
 }
 
+
+/**
+ * Converts relative paths, e.g. 'models/index.bld' to local file
+ * URLs, e.g. 'file:///tmp/headless-three/models/index.bld'.
+ *
+ * @param {string} maybePathStr
+ * @return {URL|null}
+ */
+export function maybeResolveLocalPath(maybePathStr) {
+  if (typeof maybePathStr === 'string') {
+    if (maybePathStr.includes(':/')) {
+      try {
+        return new URL(maybePathStr)
+      } catch (e) {
+        // fallthru to undefined
+      }
+    } else {
+      const newPath = path.resolve(maybePathStr)
+      const localFileUrl = new URL('file://' + newPath)
+      return localFileUrl
+    }
+  }
+  return undefined
+}

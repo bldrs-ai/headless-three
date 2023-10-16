@@ -5,5 +5,5 @@ module.exports = {
   transform: {'\\.[jt]sx?$': 'babel-jest'},
   transformIgnorePatterns: [],
   moduleNameMapper: {},
-  setupFilesAfterEnv: [],
+  setupFilesAfterEnv: ['./src/setupTests.js'],
 }

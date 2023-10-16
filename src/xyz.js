@@ -7,10 +7,6 @@ import {BufferGeometry, Points, PointsMaterial} from 'three'
  * @return {Points}
  */
 export default function xyzToThree(xyzGeometry) {
-  // HACK(pablo): probably shouldn't center.  Camera should do this
-  // fine for standalone, and otherwise the offset in multi-model
-  // probably matters.
-  xyzGeometry.center()
   return new Points(
     xyzGeometry,
     new PointsMaterial({
@@ -18,6 +14,7 @@ export default function xyzToThree(xyzGeometry) {
       color: 0xabcdef
     })
   )
+  // HACK(pablo)
     /*
     new PointsMaterial({
       size: 1,

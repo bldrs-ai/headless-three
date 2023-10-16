@@ -3,3 +3,6 @@ bundle.js
 venv
 .idea
 dist/
+
+# Test curl output
+render.png

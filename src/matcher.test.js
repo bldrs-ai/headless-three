@@ -48,4 +48,17 @@ describe('matcher', () => {
     expect(cb).toHaveBeenCalledTimes(1)
     expect(fail).not.toHaveBeenCalled()
   })
+
+
+  it('falls thru to final or', () => {
+    const cb = jest.fn()
+    const fail = jest.fn()
+    matcher(
+      'https://localhost:8090/models/bld/mix.bld',
+      /dontmatch/)
+      .then(fail)
+      .or(cb)
+    expect(cb).toHaveBeenCalledTimes(1)
+    expect(fail).not.toHaveBeenCalled()
+  })
 })
