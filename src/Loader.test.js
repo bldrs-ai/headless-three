@@ -1,6 +1,11 @@
 import {load} from './Loader'
-import {MSW_TEST_PORT} from './setupTests'
 import './fetch-polyfill'
+
+
+// TODO(pablo): export and reuse when bun bug is fixed
+// https://github.com/oven-sh/bun/issues/6335
+// import {MSW_TEST_PORT} from './setupTests'
+const MSW_TEST_PORT = 3000
 
 
 let mathRandomSpy
