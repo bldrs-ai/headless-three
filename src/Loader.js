@@ -1,5 +1,10 @@
 import axios from 'axios'
 import fs from 'fs'
+import {IFCLoader} from 'web-ifc-three'
+// TODO(pablo): This was being used for original h3.
+//import {IFCLoader} from 'web-ifc-three/web-ifc-three/dist/web-ifc-three.js'
+// TODO(pablo): This would be nice, but as built, it has a dynamic require of 'fs' that breaks.
+//import {IFCLoader} from 'three/addons/loaders/IFCLoader.js'
 import {Rhino3dmLoader} from 'three/addons/loaders/3DMLoader.js'
 import {DRACOLoader} from 'three/addons/loaders/DRACOLoader.js'
 import {FBXLoader} from 'three/addons/loaders/FBXLoader.js'
@@ -8,7 +13,6 @@ import {OBJLoader} from 'three/addons/loaders/OBJLoader.js'
 import {PDBLoader} from 'three/addons/loaders/PDBLoader.js'
 import {STLLoader} from 'three/addons/loaders/STLLoader.js'
 import {XYZLoader} from 'three/addons/loaders/XYZLoader.js'
-import {IFCLoader} from 'web-ifc-three/web-ifc-three/dist/web-ifc-three.js'
 import BLDLoader from './BLDLoader.js'
 import * as Filetype from './Filetype.js'
 import {assertDefined, assertTrue} from './assert.js'
@@ -227,8 +231,9 @@ function newGltfLoader() {
  */
 async function newIfcLoader() {
   const loader = new IFCLoader()
-  // TODO(pablo): HAAAACK. This is relative to node_modules/web-ifc-three.
-  loader.ifcManager.setWasmPath('../../../web-ifc/')
+  // TODO(pablo): Now using Conway, it's working, but not sure how!
+  //loader.ifcManager.setWasmPath('../../../web-ifc/')
+  //loader.ifcManager.setWasmPath('../../../bldrs-conway/compiled/dependencies/conway-geom/Dist/')
 
   // Setting COORDINATE_TO_ORIGIN is necessary to align the model as
   // it is in Share.  USE_FAST_BOOLS is also used live, tho not sure
