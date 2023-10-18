@@ -1,5 +1,6 @@
 import esbuild from 'esbuild'
 import {webIfcShimAliasPlugin} from './web-ifc-shim-alias-plugin.js'
+import {webIfcThreeImportFixupPlugin} from './web-ifc-three-import-fixup.js'
 
 
 // These usually have dynamic requires that make the bundler or node
@@ -30,7 +31,7 @@ esbuild
     external: externalPackages,
     sourcemap: 'inline',
     logLevel: 'info',
-    plugins: [webIfcShimAliasPlugin]
+    plugins: [webIfcShimAliasPlugin, webIfcThreeImportFixupPlugin]
   })
   .then((result) => {
     console.log('Build succeeded.')
