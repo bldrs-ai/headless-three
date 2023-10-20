@@ -7,19 +7,34 @@
   "objScale": 1,
   "objects": [
     {
-      "href": "obj/index.bld",
+      "href": "bld/mix.bld",
+      "scale": 0.5,
+      "pos": [-35,15,5]
+    },
+    {
+      "href": "fbx/samba-dancing.fbx",
+      "scale": 0.07,
+      "pos": [-35,0,5]
+    },
+    {
+      "href": "gltf/Duck.glb",
+      "scale": 1,
+      "pos": [-40,0,20]
+    },
+    {
+      "href": "ifc/index.ifc",
       "scale": 1,
       "pos": [0,0,0]
     },
     {
-      "href": "pdb/index.bld",
-      "scale": 0.4,
-      "pos": [5,4,5.5]
+      "href": "obj/index.bld",
+      "scale": 5,
+      "pos": [-50,0,5]
     },
     {
-      "href": "ifc/index.ifc",
-      "scale": 0.2,
-      "pos": [0,0,-5]
+      "href": "pdb/index.bld",
+      "scale": 5,
+      "pos": [-40,20,5]
     }
   ]
 }

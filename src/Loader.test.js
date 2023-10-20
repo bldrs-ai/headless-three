@@ -43,7 +43,6 @@ describe('Loader', () => {
     expect(model).toMatchSnapshot()
   })
 
-
   it('loads an OBJ model', async () => {
     const onProgress = jest.fn()
     const onUnknownType =  jest.fn()
@@ -62,4 +61,30 @@ describe('Loader', () => {
     expect(model.children[0].isObject3D).toBe(true)
     expect(model).toMatchSnapshot()
   })
+
+
+  // TODO(pablo): Dies with 'Trace: Loader error during parse:
+  // RangeError: Offset is outside the bounds of the DataView'
+  // But no stack trace.
+  // However, Duck.glb does load for live server.
+/*
+  it('loads an GLB model', async () => {
+    const onProgress = jest.fn()
+    const onUnknownType =  jest.fn()
+    const onError =  jest.fn()
+    const model = await load(
+      `http://localhost:${MSW_TEST_PORT}/models/gltf/Duck.glb`,
+      onProgress,
+      onUnknownType,
+      onError
+    )
+    expect(onUnknownType).not.toHaveBeenCalled()
+    expect(onError).not.toHaveBeenCalled()
+    // TODO(pablo): not called
+    // expect(onProgress).toHaveBeenCalled()
+    expect(model).toBeDefined()
+    //expect(model.children[0].isObject3D).toBe(true)
+    expect(model).toMatchSnapshot()
+  })
+*/
 })

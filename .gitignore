@@ -3,6 +3,7 @@ build
 
 # Test curl output
 render.png
+log
 
 # Misc
 venv
