@@ -78,24 +78,22 @@ export async function load(
 async function readModel(loader, modelData, basePath, isLoaderAsync) {
   // debug().log(`Loader#readModel: loader(${loader.constructor.name}) basePath(${basePath}) isAsync(${isLoaderAsync}), data type: `, typeof modelData)
   let model
-  /* GLB
+  // GLTFLoader is unique so far in using an onLoad and onError.
+  // TODO(pablo): GLTF also generates errors for texture loads, but
+  // that seems to be deep in the promise stack within the loader.
+  if (loader instanceof GLTFLoader) {
     model = await new Promise((resolve, reject) => {
-      debug().log('Loader#readModel: promise in')
       try {
         loader.parse(modelData, './', (m) => {
-          // debug().log('Loader#readModel: promise: model:', m)
           resolve(m)
         }, (err) => {
-          debug().log('Loader#readModel: promise: error:', err)
           reject(`Loader error during parse: ${err}`)
         })
       } catch (e) {
         reject(`Unhandled error in parse ${e}`)
       }
-      })
-      // debug().log('Loader#readModel: promise out, model:', model)
-      */
-  if (isLoaderAsync) {
+    })
+  } else if (isLoaderAsync) {
     model = await loader.parse(modelData, basePath)
   } else {
     model = loader.parse(modelData, basePath)
@@ -103,11 +101,12 @@ async function readModel(loader, modelData, basePath, isLoaderAsync) {
   if (!model) {
     throw new Error('Loader could not read model')
   }
-  // debug().log('Local file load: model:', model)
   return model
 }
 
 
+// TODO(pablo): not used.  Would be a higher-level API into the three
+// loader system.  Maybe works better for complex loaders. TBD.
 async function delegateLoad(url) {
   const urlStr = url.toString()
   return await new Promise((resolve, reject) => {
@@ -177,13 +176,13 @@ async function findLoader(pathname) {
       isFormatText = true
       break
     }
-      /*
     case '.glb': {
       loader = newGltfLoader()
       fixupCb = glbToThree
       isLoaderAsync = false
       break
     }
+    /*
     case '.3dm': {
       isLoaderAsync = true
       loader = {
@@ -219,7 +218,7 @@ async function findLoader(pathname) {
 function newGltfLoader() {
   const loader = new GLTFLoader
   const dracoLoader = new DRACOLoader
-  dracoLoader.setDecoderPath('http://localhost:8090/node_modules/three/examples/jsm/libs/draco/')
+  dracoLoader.setDecoderPath('./node_modules/three/examples/jsm/libs/draco/')
   loader.setDRACOLoader(dracoLoader)
   return loader
 }
