@@ -981,6 +981,17 @@
   resolved "https://registry.npmjs.org/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
+"@bldrs-ai/conway@^0.1.0":
+  version "0.1.0"
+  resolved "https://npm.pkg.github.com/download/@bldrs-ai/conway/0.1.0/756590f862f0310cff69f9e122cf6b991dc4a6cd#756590f862f0310cff69f9e122cf6b991dc4a6cd"
+  integrity sha512-obilaWmLcohAfI7r7JvXpus/IPEE/OAPlHL1d2GAhmv6ss4nfYK3S+g16/wuEOt1bM3U8YSOqzVbzRhy6asDdg==
+  dependencies:
+    buffer "^6.0.3"
+    gl-matrix "^3.4.3"
+    seedrandom "^3.0.5"
+    smart-buffer "^4.2.0"
+    yargs "^17.7.1"
+
 "@esbuild/android-arm64@0.18.16":
   version "0.18.16"
   resolved "https://registry.yarnpkg.com/@esbuild/android-arm64/-/android-arm64-0.18.16.tgz#34f562abc0015933aabd41b3d50d8d3359e30155"
@@ -1934,16 +1945,6 @@ bl@^4.0.3, bl@^4.1.0:
     buffer "^5.5.0"
     inherits "^2.0.4"
     readable-stream "^3.4.0"
-
-"bldrs-conway@file:bldrs-conway-v0.0.1.tgz":
-  version "0.0.1"
-  resolved "file:bldrs-conway-v0.0.1.tgz#e2ca4d12524b0130bdc6ab2c4af65a838b693e37"
-  dependencies:
-    buffer "^6.0.3"
-    gl-matrix "^3.4.3"
-    seedrandom "^3.0.5"
-    smart-buffer "^4.2.0"
-    yargs "^17.7.1"
 
 body-parser@1.20.1:
   version "1.20.1"
@@ -5017,10 +5018,10 @@ test-exclude@^6.0.0:
     glob "^7.1.4"
     minimatch "^3.0.4"
 
-three-mesh-bvh@0.5.21:
-  version "0.5.21"
-  resolved "https://registry.yarnpkg.com/three-mesh-bvh/-/three-mesh-bvh-0.5.21.tgz#e08f5f3052d624cce36d0975692949c02359832f"
-  integrity sha512-TGXPk7YwtlU5rgQJYA25OT6yAdBMeekfC4BTkGNtTWA5glb2rmEpjxvhZncRQSl73QZir2LFOQT0FjfzgG55xw==
+three-mesh-bvh@^0.5.11:
+  version "0.5.24"
+  resolved "https://registry.yarnpkg.com/three-mesh-bvh/-/three-mesh-bvh-0.5.24.tgz#56dd27ad35bfbafacedaba4a4d567723bbdd686c"
+  integrity sha512-VTIgfjz8aFoPKTQoMIQQv9jJD4ybFRZuKKE1/kqy78FQcuHQ0+iIWv7C5cSb2inlvs7bNMVY3yRx3RXGZfrvzQ==
 
 three@^0.149.0:
   version "0.149.0"
@@ -5261,23 +5262,23 @@ web-encoding@^1.1.5:
   optionalDependencies:
     "@zxing/text-encoding" "0.9.0"
 
-web-ifc-three@^0.0.125:
-  version "0.0.125"
-  resolved "https://registry.yarnpkg.com/web-ifc-three/-/web-ifc-three-0.0.125.tgz#e9ec0e10e397b7c2fc5be967b112173cc696e78c"
-  integrity sha512-i9hnYQq5XOEJ/eeYgwe44IAiIgbjn46zOcuEuvkV+8liutrDHitv8Ct126BNOBaoe7B9ZYnQk8CL9/YEtdtGOQ==
+web-ifc-three@^0.0.118:
+  version "0.0.118"
+  resolved "https://registry.yarnpkg.com/web-ifc-three/-/web-ifc-three-0.0.118.tgz#25ca284c1911773e616882833c2fc616150aca5a"
+  integrity sha512-xNNvP+wBGrNBtcC37W0lPdy69hNBjLPmyrYJNqeuyLM7vy12A+fB8TsMOMXVYRCLlOmRQR0uQS0m0KgYYbxlnA==
   dependencies:
-    three-mesh-bvh "0.5.21"
-    web-ifc "^0.0.39"
+    three-mesh-bvh "^0.5.11"
+    web-ifc "^0.0.35"
 
-web-ifc@^0.0.39:
-  version "0.0.39"
-  resolved "https://registry.yarnpkg.com/web-ifc/-/web-ifc-0.0.39.tgz#c3c7e9b16aad79f8ad78e346671cb5b854480737"
-  integrity sha512-sg+DyxDiyXBqlXXbz+uSqw8IGX+mVvHmn2+hg6UXDvAcrzJJw8EI2H4ZzlxWxCqqdpGVeK0wCpdeQm43UCDbrA==
+web-ifc@^0.0.34:
+  version "0.0.34"
+  resolved "https://registry.yarnpkg.com/web-ifc/-/web-ifc-0.0.34.tgz#988cc9879e340320058bd1aefab9542705c3010c"
+  integrity sha512-crrrp9VXvxZQ7n4Uia7vqx4Dlp9FQy4Z4EwB5Ok9Hd7+dtcTMe8lPOFQYR1AxzNcqBzFxFzSiXX0v6VbRJzZKA==
 
-web-ifc@^0.0.41:
-  version "0.0.41"
-  resolved "https://registry.npmjs.org/web-ifc/-/web-ifc-0.0.41.tgz"
-  integrity sha512-rSucJcwWDw6jrfxPu77jVcpCU6otMd3qWYsH+6L3nr5jJVr4S1O5rAZfkKNlpBM5m0mDvSHU3DzXm9SXfGqBkw==
+web-ifc@^0.0.35:
+  version "0.0.35"
+  resolved "https://registry.yarnpkg.com/web-ifc/-/web-ifc-0.0.35.tgz#60506779b82677a7b2977b7e784feddec494264b"
+  integrity sha512-if/L9RiJAD+jJ1oWtHj44+o2NG6K6azK0otE9Pbppr5hNBnouYfJQNmnHZ+Ya+wZeaByo9KeU64D60Y6lFnT4w==
 
 web-streams-polyfill@^3.0.3:
   version "3.2.1"

@@ -1,0 +1,1 @@
+curl -f -d {"url": "http://localhost:8090/models/ifc/bsmart-IFC4/Additional_test_cases/Examples/Beam_varying_cardinal_points/File.ifc"} -H content-type: application/json -o models/ifc/bsmart-IFC4/Additional_test_cases/Examples/Beam_varying_cardinal_points/File.ifc-fit.png --fail --silent --show-error -D- http://localhost:8001/render

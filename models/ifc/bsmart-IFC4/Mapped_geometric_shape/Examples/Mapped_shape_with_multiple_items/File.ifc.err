@@ -1,0 +1,1 @@
+curl -f -d {"url": "http://localhost:8090/models/ifc/bsmart-IFC4/Mapped_geometric_shape/Examples/Mapped_shape_with_multiple_items/File.ifc"} -H content-type: application/json -o models/ifc/bsmart-IFC4/Mapped_geometric_shape/Examples/Mapped_shape_with_multiple_items/File.ifc-fit.png --fail --silent --show-error -D- http://localhost:8001/render
