@@ -1,0 +1,1 @@
+curl -f -d {"url": "http://localhost:8090/models/ifc/bsmart-IFC4/Placements_and_GIS_referencing/Examples/Geographic_referencing/File.ifc"} -H content-type: application/json -o models/ifc/bsmart-IFC4/Placements_and_GIS_referencing/Examples/Geographic_referencing/File.ifc-fit.png --fail --silent --show-error -D- http://localhost:8001/render

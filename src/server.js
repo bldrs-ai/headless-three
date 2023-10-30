@@ -51,6 +51,13 @@ app.listen(port, () => {
 
 async function handler(req, res) {
   const [glCtx, renderer, scene, camera] = initThree()
+  if (!req.body.url) {
+    const msg = `Cannot parse URL from body: ${JSON.stringify(req.body)}`
+    res.status(404).send(msg).end()
+    console.log('Content-Type', req.get('Content-Type'))
+    console.warn(msg)
+    return
+  }
   const modelUrl = new URL(req.body.url)
   const parsedUrl = parseUrl(modelUrl)
   debug().log('server#post, parsedUrl:', parsedUrl)

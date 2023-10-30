@@ -58,6 +58,12 @@ jobs:
       - name: Log in to Fly.io Container Registry
         run: flyctl auth docker
 
+
+      - name: Configure registry
+        run: |
+          echo "@bldrs-ai:registry=https://npm.pkg.github.com" >> ~/.npmrc
+          echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" >> ~/.npmrc
+
       - name: Build and Push
         uses: docker/build-push-action@v4
         with:

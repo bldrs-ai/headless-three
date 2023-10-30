@@ -1,0 +1,1 @@
+curl -f -d {"url": "http://localhost:8090/models/ifc/bsmart-IFC4/Building_element_standard_case/Examples/Beam_revolved_solid/File.ifc"} -H content-type: application/json -o models/ifc/bsmart-IFC4/Building_element_standard_case/Examples/Beam_revolved_solid/File.ifc-fit.png --fail --silent --show-error -D- http://localhost:8001/render
