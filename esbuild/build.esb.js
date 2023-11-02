@@ -15,6 +15,8 @@ const externalPackages = [
   'jsdom',
   'pngjs',
   'proxy-from-env',
+  'winston',
+  '@colors',
   '@sentry',
 ]
 
@@ -24,6 +26,7 @@ esbuild
   .build({
     entryPoints: ['./src/server.js'],
     outfile: './build/server-bundle.js',
+    //outdir: 'build',
     bundle: true,
     format: 'esm',
     target: ['node16'],
