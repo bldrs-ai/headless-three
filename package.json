@@ -21,6 +21,7 @@
     "web-ifc": "^0.0.41",
     "web-ifc-three": "^0.0.125",
     "web-worker": "^1.2.0",
+    "winston": "^3.11.0",
     "xhr2": "^0.2.1"
   },
   "devDependencies": {
