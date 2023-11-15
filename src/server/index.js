@@ -6,11 +6,11 @@ import {
   render,
   captureScreenshot,
   parseCamera,
-} from "./lib.js"
-import {parseUrl} from './urls.js'
-import {load} from './Loader.js'
-import debug, {INFO} from './debug.js'
-import {createTaggedLogger} from './logging'
+} from "../lib.js"
+import {parseUrl} from '../urls.js'
+import {load} from '../Loader.js'
+import debug, {INFO} from '../debug.js'
+import {createTaggedLogger} from '../logging.js'
 
 
 const renderLogger = createTaggedLogger('/render')
