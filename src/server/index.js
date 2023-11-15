@@ -11,6 +11,7 @@ import {parseUrl} from '../urls.js'
 import {load} from '../Loader.js'
 import debug, {INFO} from '../debug.js'
 import {createTaggedLogger} from '../logging.js'
+import healthcheckHandler from './healthcheck.js'
 
 
 const renderLogger = createTaggedLogger('/render')
@@ -82,9 +83,7 @@ app.use(loggingHandler)
 
 
 app.post('/render', handler)
-app.get('/healthcheck', (req, res) => {
-  res.status(200).send()
-})
+app.get('/healthcheck', healthcheckHandler)
 // Install Sentry error handler after all routes but before any other error handlers
 app.use(Sentry.Handlers.errorHandler())
 
