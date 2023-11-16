@@ -1,6 +1,8 @@
-import { captureScreenshot, fitModelToFrame, initThree, parseCamera, render } from '../lib.js';
-import { parseUrl } from '../urls.js';
-import { load } from '../Loader.js';
+import {
+  captureScreenshot, fitModelToFrame, initThree, parseCamera, render
+} from '../lib.js'
+import { parseUrl } from '../urls.js'
+import { load } from '../Loader.js'
 
 const renderHandler = async (req, res) => {
   const [glCtx, renderer, scene, camera] = initThree()
