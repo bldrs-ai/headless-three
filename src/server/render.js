@@ -5,7 +5,19 @@ import { parseUrl } from '../urls.js'
 import { load } from '../Loader.js'
 
 const renderHandler = async (req, res) => {
-  const modelUrl = new URL(req.body.url)
+  if (req.body === undefined || !req.body.url) {
+    res.status(400).end('No valid model URL was provided')
+    return
+  }
+
+  let modelUrl
+  try {
+    modelUrl = new URL(req.body.url)
+  } catch {
+    res.status(400).end('No valid model URL was provided')
+    return
+  }
+
   const parsedUrl = parseUrl(modelUrl)
   renderLogger.log('debug', 'server#post, parsedUrl:', parsedUrl)
   if (parsedUrl.target === undefined) {
