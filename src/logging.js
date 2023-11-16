@@ -17,7 +17,7 @@ export const logger = winston.createLogger({
  *
  *   [http] info: yo {foo: 'bar'}
  */
-export function createTaggedLogger(tag: string, filterCb?: Function) {
+export function createTaggedLogger(tag, filterCb) {
   return winston.createLogger({
     level: 'info',
     format: winston.format.combine(
@@ -34,8 +34,8 @@ export function createTaggedLogger(tag: string, filterCb?: Function) {
 }
 
 
-function tagFormat(filterCb?: Function) {
-  return winston.format.printf((info: Record<string, string>) => {
+function tagFormat(filterCb) {
+  return winston.format.printf((info) => {
     const {label, level, message} = info
     const metadata = filterCb ? filterCb(info.metadata) : info.metadata
     const metaString = metadata ? `, payload: ${JSON.stringify(metadata)}` : ''
