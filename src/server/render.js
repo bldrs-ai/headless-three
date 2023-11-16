@@ -5,7 +5,6 @@ import { parseUrl } from '../urls.js'
 import { load } from '../Loader.js'
 
 const renderHandler = async (req, res) => {
-  const [glCtx, renderer, scene, camera] = initThree()
   const modelUrl = new URL(req.body.url)
   const parsedUrl = parseUrl(modelUrl)
   renderLogger.log('debug', 'server#post, parsedUrl:', parsedUrl)
@@ -33,6 +32,7 @@ const renderHandler = async (req, res) => {
   }
 
   // renderLogger.log('server#post, model:', model)
+  const [glCtx, renderer, scene, camera] = initThree()
   scene.add(model)
 
   if (parsedUrl.params.c) {
