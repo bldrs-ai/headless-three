@@ -30,6 +30,12 @@ export const handlers = [
       );
     }
   }),
+
+  rest.get(`http://localhost:${MSW_TEST_PORT}/file-that-does-not-exist.txt`, (req, res, ctx) => {
+    return res(
+        ctx.status(404),
+    )
+  })
 ]
 
 
