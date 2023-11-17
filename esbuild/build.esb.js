@@ -24,7 +24,7 @@ const externalPackages = [
 // TODO(pablo): this builds for me, but the bundle isn't running yet.
 esbuild
   .build({
-    entryPoints: ['./src/server.js'],
+    entryPoints: ['./src/server/index.js'],
     outfile: './build/server-bundle.js',
     //outdir: 'build',
     bundle: true,
