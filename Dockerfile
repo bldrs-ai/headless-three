@@ -1,4 +1,4 @@
-FROM node:16-slim AS builder
+FROM node:18-slim AS builder
 
 RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y libxi-dev libglu1-mesa-dev libglew-dev xvfb && \
