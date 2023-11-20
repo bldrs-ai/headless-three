@@ -29,7 +29,7 @@ esbuild
     //outdir: 'build',
     bundle: true,
     format: 'esm',
-    target: ['node16'],
+    target: ['node18'],
     platform: 'node',
     external: externalPackages,
     sourcemap: 'inline',
