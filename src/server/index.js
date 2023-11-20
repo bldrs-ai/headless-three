@@ -1,12 +1,10 @@
 import express from 'express'
 import * as Sentry from '@sentry/node'
-import debug, {INFO} from '../debug.js'
-import {createTaggedLogger} from '../logging.js'
+import debug, { INFO } from '../debug.js'
 import renderHandler from './render.js'
 import healthcheckHandler from './healthcheck.js'
+import { createRequestLogger } from '../logging.js'
 
-
-const renderLogger = createTaggedLogger('/render')
 
 const app = express()
 const port = 8001
@@ -30,52 +28,20 @@ Sentry.init({
   tracesSampleRate: 1.0,
 })
 app.use(Sentry.Handlers.requestHandler())
+
 // TracingHandler creates a trace for every incoming request
 app.use(Sentry.Handlers.tracingHandler())
 
 // Enable JSON request body middleware
 app.use(express.json())
 
-function loggingHandler(req, res, next) {
+// Register our request logging middleware
+app.use(createRequestLogger())
 
-  let bytesSent = 0
-  let responseHeaders
-
-  // Patch each of the egress methods to accumulate data for logging.
-  const originalWriteHead = res.writeHead
-  const originalWrite = res.write
-  const originalEnd = res.end
-
-  res.writeHead = function (statusCode, headers) {
-    responseHeaders = {
-      statusCode: statusCode,
-      headers: headers || res.getHeaders(),
-    }
-    return originalWriteHead.apply(res, arguments)
-  }
-
-  res.write = function (chunk, ...rest) {
-    bytesSent += Buffer.isBuffer(chunk) ? chunk.length : Buffer.byteLength(chunk)
-    return originalWrite.call(res, chunk, ...rest)
-  }
-
-  res.end = function (chunk, ...rest) {
-    if (chunk) {
-      bytesSent += Buffer.isBuffer(chunk) ? chunk.length : Buffer.byteLength(chunk)
-    }
-    renderLogger.info('response log stuff', {requestHeaders: req.rawHeaders, responseHeaders, responseSize: bytesSent})
-
-    return originalEnd.call(res, chunk, ...rest)
-  }
-
-  // Don't forget to call next() to pass on to the next middleware/route handler!
-  next()
-}
-app.use(loggingHandler)
-
-
+// Register our routes and their respective handlers
 app.get('/healthcheck', healthcheckHandler)
 app.post('/render', renderHandler)
+
 // Install Sentry error handler after all routes but before any other error handlers
 app.use(Sentry.Handlers.errorHandler())
 
