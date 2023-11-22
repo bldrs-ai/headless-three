@@ -64,6 +64,28 @@ describe('parseUrl', () => {
     expect(parsed).toEqual(expected)
   })
 
+  it('parses Share URL with express IDs', () => {
+    const url = new URL('https://bldrs.ai/share/v/gh/OlegMoshkovich/Logo/main/IFC_STUDY.ifc/103/25873/113/122/743#c:148.452,-15.74,178.856,14.375,24.677,-9.003')
+    const converted = new URL('https://raw.githubusercontent.com/OlegMoshkovich/Logo/main/IFC_STUDY.ifc')
+
+    const parsed = parseUrl(url)
+    const expected = {
+      original: url,
+      type: SOURCE_TYPE.VCS,
+      target: {
+        organization: 'OlegMoshkovich',
+        repository: 'Logo',
+        ref: 'main',
+        url: converted
+      },
+      params: {
+        'c': '148.452,-15.74,178.856,14.375,24.677,-9.003'
+      },
+    }
+
+    expect(parsed).toEqual(expected)
+  })
+
 
   it('parses localhost file ref', () => {
     const url = new URL('https://localhost:8090/models/bld/mix.bld')
