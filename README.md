@@ -20,6 +20,16 @@ $ yarn serve
 ...
 ```
 
+### Docker server
+
+To run the server locally, you will need a working Docker installation.
+
+    $ docker compose build   # Build the Docker image
+    $ docker compose up -d   # Start the server, accessible at http://localhost:8001
+
+
+## Client Requests
+
 Send a render request pointing to a CAD file URL:
 ```
 $ curl -d '{"url": "https://github.com/bldrs-ai/headless-three/blob/main/models/ifc/index.ifc"}' \
@@ -32,13 +42,6 @@ Example render of index.ifc:
 ![index.ifc rendered to index.png](https://github.com/bldrs-ai/headless-three/blob/main/models/index.png)
 ![Bunny.obj rendered to Bunny.png](https://github.com/bldrs-ai/headless-three/blob/main/models/Bunny.png)
 
-
-### Docker server
-
-To run the server locally, you will need a working Docker installation.
-
-    $ docker compose build   # Build the Docker image
-    $ docker compose up -d   # Start the server, accessible at http://localhost:8001
 
 ### Local Server Test script
 ```
