@@ -1,51 +1,56 @@
 # headless-three
-This library aims for headless rendering of three.js scenes based on models by common CAD formats.
+This library is for rendering CAD models in three.js sceens in a headless environment.
 
-Currently supports IFC models.
+Supported formats: bld, fbx, glb, ifc, obj, pdb, stl, xyz.
+
+[See src/Filetypes.js for current listing](https://github.com/bldrs-ai/headless-three/tree/main/src/Filetypes.js)
 
 ## Setup
-This library uses a custom build of web-ifc-three.
+Requires Node v18+.
 
 ```
 $ yarn install
-$ npm_config_build_from_source=true yarn add --force https://github.com/bldrs-ai/web-ifc-three.git
-$ yarn build
+$ yarn test
 ```
 
-## Run the tool
+## Run
+Run the headless server:
+```
+$ yarn serve
+...
+```
 
-### Local file
+Send a render request pointing to a CAD file URL:
 ```
-# Grab the coords from a model on Bldrs, e.g. the default homepage:
-#   https://bldrs.ai/share/v/p/index.ifc#c:-150.147,-85.796,167.057,-32.603,17.373,-1.347
-#
-# Then add them as an arg after the model filename:
-headless-three> node src/headless.js models/index.ifc -150.147,-85.796,167.057,-32.603,17.373,-1.347 && open screenshot.png
-headless-three> node src/headless.js models/Bunny.obj 0,.3,.25,0,0,-0.1 && open screenshot.png
-```
+$ curl -d '{"url": "https://github.com/bldrs-ai/headless-three/blob/main/models/ifc/index.ifc"}' \
+       -H 'content-type: application/json' \
+       -o rendered.png \
+       http://localhost:8001/render
+
 
 Example render of index.ifc:
 ![index.ifc rendered to index.png](https://github.com/bldrs-ai/headless-three/blob/main/models/index.png)
 ![Bunny.obj rendered to Bunny.png](https://github.com/bldrs-ai/headless-three/blob/main/models/Bunny.png)
 
 
-## Design
-
-![dataflow](https://github.com/bldrs-ai/headless-three/blob/main/flow.png)
-
-
-## Local Development (Server)
+### Docker server
 
 To run the server locally, you will need a working Docker installation.
 
     $ docker compose build   # Build the Docker image
     $ docker compose up -d   # Start the server, accessible at http://localhost:8001
-    $ curl -d '{"url": "http://server.com/path/to/a/model.ifc"}' \
-        -H 'content-type: application/json' \
-        -o rendered.png \
-        http://localhost:8001/render
 
 ### Local Server Test script
 ```
-for f in `ls models/*/*.{bld,fbx,ifc,obj,stl,pdb,xyz}` ; do curl -f -d "{\"url\": \"http://localhost:8090/$f\"}"     -H 'content-type: application/json'     -o "$f"-fit.png --fail --silent --show-error  -D- http://localhost:8001/render > log ; grep -q '200 OK' log || /bin/mv -f log $f.err ; done
+for f in `ls models/*/*.{bld,fbx,ifc,obj,stl,pdb,xyz}` ; do
+  curl -f -d "{\"url\": \"http://localhost:8090/$f\"}" \
+       -H 'content-type: application/json' \
+       -o "$f"-fit.png --fail --silent --show-error \
+       -D- http://localhost:8001/render > log ;
+  grep -q '200 OK' log || /bin/mv -f log $f.err ;
+done
 ```
+
+## Design
+
+![dataflow](https://github.com/bldrs-ai/headless-three/blob/main/flow.png)
