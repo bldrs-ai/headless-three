@@ -39,8 +39,8 @@ $ curl -d '{"url": "https://github.com/bldrs-ai/headless-three/blob/main/models/
 ```
 
 Example render of index.ifc:
-![index.ifc rendered to index.png](https://github.com/bldrs-ai/headless-three/blob/main/models/index.png)
-![Bunny.obj rendered to Bunny.png](https://github.com/bldrs-ai/headless-three/blob/main/models/Bunny.png)
+![index.ifc rendered to index.png](https://github.com/bldrs-ai/headless-three/blob/main/models/ifc/index.ifc.png)
+![Bunny.obj rendered to Bunny.png](https://github.com/bldrs-ai/headless-three/blob/main/models/obj/Bunny.obj.png)
 
 
 ### Local Server Test script
