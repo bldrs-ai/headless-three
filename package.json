@@ -6,6 +6,9 @@
     "serve": "node --enable-source-maps build/server-bundle.js",
     "test": "jest"
   },
+  "engines": {
+    "node": ">=16.0.0 <17.0.0"
+  },
   "dependencies": {
     "@bldrs-ai/conway": "./bldrs-ai-conway-0.1.408.tgz",
     "@sentry/node": "^7.64.0",
