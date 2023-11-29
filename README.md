@@ -36,7 +36,7 @@ $ curl -d '{"url": "https://github.com/bldrs-ai/headless-three/blob/main/models/
        -H 'content-type: application/json' \
        -o rendered.png \
        http://localhost:8001/render
-
+```
 
 Example render of index.ifc:
 ![index.ifc rendered to index.png](https://github.com/bldrs-ai/headless-three/blob/main/models/index.png)
