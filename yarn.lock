@@ -981,6 +981,16 @@
   resolved "https://registry.npmjs.org/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
+"@bldrs-ai/conway@./bldrs-ai-conway-0.1.408.tgz":
+  version "0.1.408"
+  resolved "./bldrs-ai-conway-0.1.408.tgz#5d5efd3f1ade98580f4f8a8b71f8d40f3e05e649"
+  dependencies:
+    buffer "^6.0.3"
+    gl-matrix "^3.4.3"
+    seedrandom "^3.0.5"
+    smart-buffer "^4.2.0"
+    yargs "^17.7.1"
+
 "@colors/colors@1.6.0", "@colors/colors@^1.6.0":
   version "1.6.0"
   resolved "https://registry.yarnpkg.com/@colors/colors/-/colors-1.6.0.tgz#ec6cd237440700bc23ca23087f513c75508958b0"
@@ -2042,16 +2052,6 @@ bl@^4.0.3, bl@^4.1.0:
     buffer "^5.5.0"
     inherits "^2.0.4"
     readable-stream "^3.4.0"
-
-"bldrs-conway@file:bldrs-conway-v0.0.1.tgz":
-  version "0.0.1"
-  resolved "file:bldrs-conway-v0.0.1.tgz#e2ca4d12524b0130bdc6ab2c4af65a838b693e37"
-  dependencies:
-    buffer "^6.0.3"
-    gl-matrix "^3.4.3"
-    seedrandom "^3.0.5"
-    smart-buffer "^4.2.0"
-    yargs "^17.7.1"
 
 body-parser@1.20.1:
   version "1.20.1"
