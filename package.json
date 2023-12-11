@@ -7,7 +7,7 @@
     "test": "jest"
   },
   "dependencies": {
-    "@bldrs-ai/conway": "./bldrs-ai-conway-0.1.425.tgz",
+    "@bldrs-ai/conway": "./bldrs-ai-conway-0.1.440.tgz",
     "@sentry/node": "^7.64.0",
     "axios": "^1.4.0",
     "camera-controls": "^2.7.0",
