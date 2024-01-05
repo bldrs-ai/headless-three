@@ -5,6 +5,8 @@ Supported formats: bld, fbx, glb, ifc, obj, pdb, stl, xyz.
 
 [See src/Filetypes.js for current listing](https://github.com/bldrs-ai/headless-three/tree/main/src/Filetypes.js)
 
+Discuss in our [Discord #headless-three](https://discord.gg/apWHfDtkJs)
+
 ## Setup
 Requires Node v18+.
 
