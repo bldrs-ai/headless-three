@@ -1,5 +1,5 @@
 import axios from 'axios'
-import fs from 'fs'
+//import fs from 'fs'
 import {IFCLoader} from 'web-ifc-three'
 // TODO(pablo): This was being used for original h3.
 //import {IFCLoader} from 'web-ifc-three/web-ifc-three/dist/web-ifc-three.js'
@@ -23,6 +23,7 @@ import glbToThree from './glb.js'
 import pdbToThree from './pdb.js'
 import stlToThree from './stl.js'
 import xyzToThree from './xyz.js'
+import {Memory} from './memory'
 
 
 /**
@@ -65,10 +66,19 @@ export async function load(
   // Provide basePath for multi-file models.  Keep the last '/' for
   // correct resolution of subpaths with '../'.
   const basePath = url.href.substring(0, url.href.lastIndexOf('/') + 1)
+  const allTimeStart = Date.now()
   let model = await readModel(loader, modelData, basePath, isLoaderAsync)
+  const allTimeEnd = Date.now()
+
+  const allTime = allTimeEnd - allTimeStart
 
   if (fixupCb) {
     model = fixupCb(model)
+  }
+
+  if (process.env.INCLUDE_WEB_IFC_SHIM_ALIAS_PLUGIN !== 'true') {
+    console.log("totalTime: " + allTime)
+    Memory.checkMemoryUsage()
   }
 
   return model

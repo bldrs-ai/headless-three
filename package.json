@@ -3,11 +3,12 @@
   "main": "src/headless.js",
   "scripts": {
     "build": "node esbuild/build.esb.js && cp node_modules/gl/build/Release/webgl.node build",
+    "build:with-conway": "node esbuild/build.esb.js --include-web-ifc-shim-alias-plugin && cp node_modules/gl/build/Release/webgl.node build",
     "serve": "node --enable-source-maps build/server-bundle.js",
     "test": "jest"
   },
   "dependencies": {
-    "@bldrs-ai/conway": "./bldrs-ai-conway-0.1.440.tgz",
+    "@bldrs-ai/conway": "./bldrs-ai-conway-0.1.553.tgz",
     "@sentry/node": "^7.64.0",
     "axios": "^1.4.0",
     "camera-controls": "^2.7.0",
