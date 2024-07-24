@@ -1,6 +1,6 @@
-  // Assuming Environment and EnvironmentType are defined elsewhere
-  import Environment from './environment';
-  import { EnvironmentType } from './environment';
+// Assuming Environment and EnvironmentType are defined elsewhere
+import Environment, {EnvironmentType} from './environment.js'
+
 
 export class Memory {
     /**

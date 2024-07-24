@@ -38,13 +38,23 @@ esbuild
     outfile: './build/server-bundle.js',
     //outdir: 'build',
     bundle: true,
-    format: 'esm',
+    format: '',
     target: ['node18'],
     platform: 'node',
     external: externalPackages,
     sourcemap: 'inline',
     logLevel: 'info',
-    plugins: plugins
+    plugins: plugins,
+    banner:{
+      js: `
+        import { fileURLToPath } from 'node:url';
+        import { dirname } from 'node:path';
+        import { createRequire as topLevelCreateRequire } from 'node:module';
+        const require = topLevelCreateRequire(import.meta.url);
+        const __filename = fileURLToPath(import.meta.url);
+        const __dirname = path.dirname(__filename);
+        `
+    },
   })
   .then((result) => {
     console.log('Build succeeded.')

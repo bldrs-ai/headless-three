@@ -35,6 +35,7 @@ const renderHandler = async (req, res) => {
   try {
     model = await load(targetUrl)
   } catch (e) {
+    console.trace('Load failed', e)
     const msg = `Internal server error ${e}`
     renderLogger.error(msg)
     res.status(500).send(msg)

@@ -1,15 +1,19 @@
 import path from 'node:path'
 
 
-const webIfcShimAliasPlugin = {
-  name: 'web-ifc-shim-alias',
-  setup(build) {
-    build.onResolve({ filter: /^web-ifc$/ }, (args) => {
-      return {
-        path: path.resolve('./node_modules/@bldrs-ai/conway/compiled/src/shim/ifc_api.js'),
-      }
-    });
-  },
+function webIfcShimAliasPlugin(isConway = true) {
+  return {
+    name: 'web-ifc-shim-alias',
+    setup(build) {
+      build.onResolve({ filter: /^web-ifc$/ }, (args) => {
+        return {
+          path: isConway ?
+            path.resolve('./node_modules/@bldrs-ai/conway/compiled/src/shim/ifc_api.js') :
+            path.resolve('../external/web-ifc-api.js'),
+        }
+      });
+    },
+  }
 }
 
 
