@@ -97,7 +97,7 @@ export async function load(
     }
 
     const dateString = date.toLocaleDateString('en-US', options).replace(/,/g, '')
-    console.log(`[${dateString}] Total Time: ${loadTime} ms,`, Memory.checkMemoryUsage())
+    console.log(`[${dateString}]: Total Time: ${loadTime} ms,`, Memory.checkMemoryUsage())
   }
 
   return model

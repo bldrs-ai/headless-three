@@ -6,13 +6,10 @@ const webIfcThreeImportFixupPlugin = {
   setup(build) {
     build.onLoad({ filter: /web-ifc-three\/IFCLoader.js/ }, async (args) => {
       let contents = await fs.promises.readFile(args.path, 'utf8')
-      console.log('args.path', args.path)
-
       contents = contents.replace(
         "import { mergeBufferGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils';",
         "import { mergeBufferGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';",
       )
-
       return { contents, loader: 'js' }
     });
   },
