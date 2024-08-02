@@ -5,12 +5,15 @@ import {webIfcThreeImportFixupPlugin} from './web-ifc-three-import-fixup.js'
 
 export function doBuild(entryPoints, outfile, isConway = true) {
   const plugins = [webIfcThreeImportFixupPlugin]
+  const defines = {}
   if (isConway) {
-    console.log("Using conway backend")
-    process.env.INCLUDE_WEB_IFC_SHIM_ALIAS_PLUGIN = 'true'
+    defines['process.env.ENGINE'] = '"conway"'
+    defines['process.env.INCLUDE_WEB_IFC_SHIM_ALIAS_PLUGIN'] = 'true'
     plugins.push(webIfcShimAliasPlugin(isConway))
+    console.log('Using conway backend')
   } else {
-    console.log("Using web-ifc backend")
+    defines['process.env.ENGINE'] = '"webifc"'
+    console.log('Using web-ifc backend')
   }
 
   esbuild.build({
@@ -25,6 +28,7 @@ export function doBuild(entryPoints, outfile, isConway = true) {
     sourcemap: true,
     logLevel: 'info',
     plugins: plugins,
+    define: defines,
     banner:{
       js: `
         import { createRequire as topLevelCreateRequire } from 'node:module';

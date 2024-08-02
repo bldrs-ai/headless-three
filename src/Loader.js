@@ -76,19 +76,28 @@ export async function load(
   // Provide basePath for multi-file models.  Keep the last '/' for
   // correct resolution of subpaths with '../'.
   const basePath = url.href.substring(0, url.href.lastIndexOf('/') + 1)
-  const allTimeStart = Date.now()
+  const loadTimeStart = Date.now()
   let model = await readModel(loader, modelData, basePath, isLoaderAsync)
-  const allTimeEnd = Date.now()
-
-  const allTime = allTimeEnd - allTimeStart
+  const loadTimeEnd = Date.now()
+  const loadTime = loadTimeEnd - loadTimeStart
 
   if (fixupCb) {
     model = fixupCb(model)
   }
+  if (process.env.ENGINE === 'webifc') {
+    const date = new Date()
+    const options = {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      timeZone: 'UTC',
+    }
 
-  if (process.env.INCLUDE_WEB_IFC_SHIM_ALIAS_PLUGIN !== 'true') {
-    console.log("totalTime: " + allTime)
-    Memory.checkMemoryUsage()
+    const dateString = date.toLocaleDateString('en-US', options).replace(/,/g, '')
+    console.log(`[${dateString}] Total Time: ${loadTime} ms,`, Memory.checkMemoryUsage())
   }
 
   return model
