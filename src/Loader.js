@@ -52,7 +52,7 @@ export async function load(
 
   let modelData
   const urlStr = url.toString()
-  if (urlStr.startsWith('file://')) {
+  if (urlStr.startsWith('file://') && process.env.APP_ENV !== 'prod') {
     const path = urlStr.substring('file://'.length)
     const stats = fs.statSync(path)
     const fileSize = stats.size
