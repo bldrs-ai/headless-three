@@ -9,7 +9,7 @@
     "build-headless-webifc": "node esbuild/headless-webifc.esbuild.js",
     "build-server-conway": "node esbuild/server.esbuild.js",
     "build-server-webifc": "node esbuild/server-webifc.esbuild.js",
-    "setup": "cp node_modules/gl/build/Release/webgl.node build",
+    "setup": "mkdir build && cp node_modules/gl/build/Release/webgl.node build",
     "serve": "node --enable-source-maps build/server.node.js",
     "serve-webifc": "node --enable-source-maps build/server-webifc.node.js",
     "test": "jest"
