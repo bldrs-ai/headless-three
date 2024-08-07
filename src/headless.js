@@ -15,52 +15,27 @@ import {supportedTypesUsageStr} from './Filetype.js'
 
 if (process.argv.length < 3) {
   console.error(
-    `Usage: node src/headless.js <path/to/file>[#c:px,py,pz[,tx,ty,tz]]\n\n` +
+    `Usage: node src/headless.js <path/to/file> [px,py,pz[,tx,ty,tz]]]\n\n` +
     `Supported types: ${supportedTypesUsageStr}`
   )
   process.exit(1)
 }
 
-const argPath = process.argv[2]
+const modelPath = path.resolve(process.argv[2])
+const cameraCsv = process.argv[3]
 
-let modelUrl
-let hash
-try {
-  modelUrl = new URL(argPath)
-  hash = modelUrl.hash
-} catch (e) {
-  // Try interpreting it as a file
-  const argPathParts  = argPath.split('#')
-  const pathname = path.resolve(argPathParts[0])
-  hash = argPathParts.length == 2 ? '#' + argPathParts[1] : ''
-  try {
-    modelUrl = new URL(`file:${pathname}${hash}`)
-  } catch(e) {
-    console.error('Could not convert file arg to url for parsing:', firstBit)
-    process.exit(1)
-  }
-}
-
-let parsedUrl = parseUrl(modelUrl)
-console.log(`modelUrl(${modelUrl}), parsed:`, parsedUrl)
-
-if (parsedUrl.target && parsedUrl.target.url) {
-  parsedUrl = parsedUrl.target.url
-} else {
-  parsedUrl = parsedUrl.original
-}
+const model = await load(modelPath)
 
 const [glCtx, renderer, scene, camera] = initThree()
 
-const model = await load(parsedUrl)
 scene.add(model)
 scene.add(new THREE.AxesHelper)
 // Materials can be accessed e.g.:
 //   model.material[0].transparent = true
 //   model.material[0].opacity = 0.1
 
-if (hash) {
-  const [px, py, pz, tx, ty, tz] = parseCamera(parsedUrl.params.c) || [0,0,0,0,0,0]
+if (cameraCsv) {
+  const [px, py, pz, tx, ty, tz] = parseCamera(cameraCsv) || [10,10,10,0,0,0]
   debug().log(`headless#camera setting: camera.pos(${px}, ${py}, ${pz}) target.pos(${tx}, ${ty}, ${tz})`)
   camera.position.set(px, py, pz)
   camera.lookAt(tx, ty, tz)

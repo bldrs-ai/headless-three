@@ -11,4 +11,4 @@ RUN yarn install
 RUN yarn build
 
 EXPOSE 8001
-CMD ["xvfb-run", "--error-file=/dev/stderr", "--listen-tcp", "--server-args", "-ac -screen 0 1024x768x24 +extension GLX +render", "node", "build/server-bundle.js"]
+CMD ["xvfb-run", "--error-file=/dev/stderr", "--listen-tcp", "--server-args", "-ac -screen 0 1024x768x24 +extension GLX +render", "node", "build/server.node.js"]

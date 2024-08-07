@@ -1,6 +1,7 @@
 import axios from 'axios'
 import fs from 'fs'
-import {IFCLoader} from 'web-ifc-three'
+import {IFCLoader} from './IFCLoader.js'
+//import {IFCLoader} from 'web-ifc-three'
 // TODO(pablo): This was being used for original h3.
 //import {IFCLoader} from 'web-ifc-three/web-ifc-three/dist/web-ifc-three.js'
 // TODO(pablo): This would be nice, but as built, it has a dynamic require of 'fs' that breaks.
@@ -23,6 +24,7 @@ import glbToThree from './glb.js'
 import pdbToThree from './pdb.js'
 import stlToThree from './stl.js'
 import xyzToThree from './xyz.js'
+import {Memory} from './memory.js'
 
 
 /**
@@ -48,14 +50,23 @@ export async function load(
     return undefined
   }
 
-  let modelData = (await axios.get(
-    url.toString(),
-    { responseType:
-      isFormatText
-      ? 'text'
-      : 'arraybuffer' }
-  )).data
-
+  let modelData
+  const urlStr = url.toString()
+  if (urlStr.startsWith('file://') && process.env.APP_ENV !== 'prod') {
+    const path = urlStr.substring('file://'.length)
+    const stats = fs.statSync(path)
+    const fileSize = stats.size
+    modelData = fs.readFileSync(path, {flag: 'r'})
+  } else {
+    modelData = (await axios.get(
+      urlStr,
+      { responseType:
+        isFormatText
+        ? 'text'
+        : 'arraybuffer' }
+    )).data
+  }
+    
   // In headless mode, this is a Node Buffer.  Convert to js
   // ArrayBuffer for local/network agnostic handling.
   if (modelData instanceof Buffer) {
@@ -65,10 +76,28 @@ export async function load(
   // Provide basePath for multi-file models.  Keep the last '/' for
   // correct resolution of subpaths with '../'.
   const basePath = url.href.substring(0, url.href.lastIndexOf('/') + 1)
+  const loadTimeStart = Date.now()
   let model = await readModel(loader, modelData, basePath, isLoaderAsync)
+  const loadTimeEnd = Date.now()
+  const loadTime = loadTimeEnd - loadTimeStart
 
   if (fixupCb) {
     model = fixupCb(model)
+  }
+  if (process.env.ENGINE === 'webifc') {
+    const date = new Date()
+    const options = {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      timeZone: 'UTC',
+    }
+
+    const dateString = date.toLocaleDateString('en-US', options).replace(/,/g, '')
+    console.log(`[${dateString}]: Total Time: ${loadTime} ms,`, Memory.checkMemoryUsage())
   }
 
   return model
@@ -231,8 +260,9 @@ function newGltfLoader() {
 async function newIfcLoader() {
   const loader = new IFCLoader()
   // TODO(pablo): Now using Conway, it's working, but not sure how!
-  //loader.ifcManager.setWasmPath('../../../web-ifc/')
-  //loader.ifcManager.setWasmPath('../../../bldrs-conway/compiled/dependencies/conway-geom/Dist/')
+  // loader.ifcManager.setWasmPath('./')
+  // loader.ifcManager.setWasmPath('../web-ifc/')
+  // loader.ifcManager.setWasmPath('../../../bldrs-conway/compiled/dependencies/conway-geom/Dist/')
 
   // Setting COORDINATE_TO_ORIGIN is necessary to align the model as
   // it is in Share.  USE_FAST_BOOLS is also used live, tho not sure
