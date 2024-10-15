@@ -2,7 +2,10 @@
   "type": "module",
   "main": "src/headless.js",
   "scripts": {
-    "build": "yarn setup && yarn build-headless && yarn build-server",
+    "build": "yarn clean && yarn setup && yarn build-headless && yarn build-server",
+    "clean": "run-script-os",
+    "clean:linux:darwin": "rm -rf ./build",
+    "clean:win32": "rmdir /s /q build",
     "build-headless": "yarn build-headless-conway && yarn build-headless-webifc",
     "build-server": "yarn build-server-conway && yarn build-server-webifc",
     "build-headless-conway": "node esbuild/headless.esbuild.js",
