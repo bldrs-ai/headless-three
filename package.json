@@ -18,7 +18,7 @@
     "test": "jest"
   },
   "dependencies": {
-    "@bldrs-ai/conway": "./bldrs-ai-conway-0.1.553.tgz",
+    "@bldrs-ai/conway-web-ifc-adapter": "./bldrs-ai-conway-web-ifc-adapter-0.1.3.tgz",
     "@sentry/node": "^7.64.0",
     "axios": "^1.4.0",
     "camera-controls": "^2.7.0",
@@ -33,7 +33,8 @@
     "web-ifc": "0.0.56",
     "web-worker": "^1.2.0",
     "winston": "^3.11.0",
-    "xhr2": "^0.2.1"
+    "xhr2": "^0.2.1",
+    "run-script-os": "^1.1.6"
   },
   "devDependencies": {
     "@babel/core": "^7.18.10",
