@@ -53,11 +53,20 @@ export async function load(
   let modelData
   const urlStr = url.toString()
   if (urlStr.startsWith('file://') && process.env.APP_ENV !== 'prod') {
-    const path = urlStr.substring('file://'.length)
-    const stats = fs.statSync(path)
-    const fileSize = stats.size
-    modelData = fs.readFileSync(path, {flag: 'r'})
-  } else {
+    // Decode the URL to handle any percent-encoded characters
+    const decodedPath = decodeURIComponent(urlStr.substring('file://'.length));
+
+    try {
+        // Use the decoded path in fs.statSync and fs.readFileSync
+        const stats = fs.statSync(decodedPath);
+        const fileSize = stats.size;
+        modelData = fs.readFileSync(decodedPath, { flag: 'r' });
+
+        // Additional logic here if needed
+    } catch (error) {
+        console.error(`Error reading file: ${error.message}`);
+    }
+} else {
     modelData = (await axios.get(
       urlStr,
       { responseType:
