@@ -8,7 +8,7 @@ function webIfcShimAliasPlugin(isConway = true) {
       build.onResolve({ filter: /^web-ifc$/ }, (args) => {
         return {
           path: isConway ?
-            path.resolve('node_modules/@bldrs-ai/conway-web-ifc-adapter/compiled/src/ifc_api.js') :
+            path.resolve('node_modules/@bldrs-ai/conway/compiled/src/shim/ifc_api.js') :
             path.resolve('../external/web-ifc-api.js'),
         }
       });
