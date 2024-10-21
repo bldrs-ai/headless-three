@@ -41,7 +41,7 @@ describe('Loader', () => {
     // expect(onProgress).toHaveBeenCalled()
     expect(model).toBeDefined()
     expect(model.isObject3D).toBe(true)
-    // expect(model).toMatchSnapshot()
+    expect(model).toMatchSnapshot()
   })
 
   it('loads an OBJ model', async () => {
@@ -60,7 +60,7 @@ describe('Loader', () => {
     // expect(onProgress).toHaveBeenCalled()
     expect(model).toBeDefined()
     expect(model.children[0].isObject3D).toBe(true)
-    // expect(model).toMatchSnapshot()
+    expect(model).toMatchSnapshot()
   })
 
   // New Test: Loads a model from a file:// URL
