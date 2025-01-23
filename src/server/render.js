@@ -85,13 +85,11 @@ const renderPanoramicLogger = createTaggedLogger('/renderPanoramic')
  *    body: { "url": "https://domain.com/some-model.glb?c=10,10,10,0,0,0" }
  */
 export const renderPanoramicHandler = async (req, res) => {
-  // 1) Validate request body
   if (!req.body || !req.body.url) {
     res.status(400).end('No valid model URL was provided')
     return
   }
 
-  // 2) Parse the model URL
   let modelUrl
   try {
     modelUrl = new URL(req.body.url)
@@ -100,7 +98,6 @@ export const renderPanoramicHandler = async (req, res) => {
     return
   }
 
-  // 3) Use your existing parseUrl() logic
   const parsedUrl = parseUrl(modelUrl)
   renderLogger.log('debug', 'renderPanoramic#parsedUrl:', parsedUrl)
 
@@ -112,12 +109,10 @@ export const renderPanoramicHandler = async (req, res) => {
   }
   const targetUrl = parsedUrl.target.url
 
-  // 4) Parse camera params if present (e.g. ?c=10,10,10,0,0,0)
   const [px, py, pz, tx, ty, tz] = parsedUrl.params.c
     ? parseCamera(parsedUrl.params.c)
     : [0, 0, 0, 0, 0, 0]
 
-  // 5) Load the model
   let model
   try {
     model = await load(targetUrl)
@@ -136,11 +131,9 @@ export const renderPanoramicHandler = async (req, res) => {
     return
   }
 
-  // 6) Initialize Three.js environment
   const [glCtx, renderer, scene, camera] = initThree()
   scene.add(model)
 
-  // 7) Position camera. If no query param 'c', auto-fit the model
   if (parsedUrl.params.c) {
     renderLogger.log(
       'debug',
@@ -158,32 +151,88 @@ export const renderPanoramicHandler = async (req, res) => {
     fitModelToFrame(renderer.domElement, scene, model, camera)
   }
 
-  // 8) Generate the panoramic screenshots (4 angles).
-  //    We'll rotate the camera around the scene origin or "pivot" point.
-  //    If your fitModelToFrame sets the camera to look at (0,0,0),
-  //    you can use (0,0,0) as pivot. Otherwise, adjust as needed.
-
   const pivot = new THREE.Vector3(0, 0, 0)
   const distance = camera.position.distanceTo(pivot)
-  const angles = [0, 90, 180, 270]
   const screenshotBuffers = []
 
-  // Utility: degrees to radians
+  // --- 1) DEFAULT vantage (fit the model to frame, if no custom camera param)
+  fitModelToFrame(renderer.domElement, scene, model, camera)
+  render(renderer, scene, camera, /*useSsaa*/ false)
+  screenshotBuffers.push(await captureScreenshotAsBuffer(glCtx))
+
+  //
+  // 2) SECOND SCREENSHOT – Use local clipping plane to “slice off” the roof
+  //
+
+  // a) Enable local clipping in the renderer
+  renderer.localClippingEnabled = true
+
+  // b) Decide a Y cut. You can base it on the building’s bounding box:
+  const boundingBox = new THREE.Box3().setFromObject(model)
+  const size = boundingBox.getSize(new THREE.Vector3())
+  const center = boundingBox.getCenter(new THREE.Vector3())
+
+  const roofY = boundingBox.max.y - 0.2 * size.y
+
+  // c) Create a plane that clips geometry *above* this roofY
+  // By default, a plane is (normal, constant). For normal=(0, -1, 0),
+  // any point with `dot(normal, point) – constant > 0` is clipped.
+  const clipPlane = new THREE.Plane(new THREE.Vector3(0, -1, 0), roofY)
+
+  // d) Attach this plane to the mesh materials
+  model.traverse((child) => {
+    if (child.isMesh && child.material) {
+      // Some meshes have multiple materials in an array:
+      const materials = Array.isArray(child.material)
+        ? child.material
+        : [child.material]
+      materials.forEach((m) => {
+        m.clippingPlanes = [clipPlane]
+        m.clipShadows = true
+      })
+    }
+  })
+
+  camera.position.set(center.x, boundingBox.max.y + size.y, center.z)
+  camera.lookAt(center)
+
+  // f) Render & capture
+  render(renderer, scene, camera, /*useSsaa*/ false)
+  screenshotBuffers.push(await captureScreenshotAsBuffer(glCtx))
+
+  // 3) THIRD SCREENSHOT – angle 45° around the center
+
+  // remove the plane for the last two images
+  model.traverse((child) => {
+    if (child.isMesh && child.material) {
+      const materials = Array.isArray(child.material)
+        ? child.material
+        : [child.material]
+      materials.forEach((m) => {
+        m.clippingPlanes = []
+      })
+    }
+  })
+
+
+  // --- 3) ANGLE 45° around the pivot
   const deg2rad = (deg) => (deg * Math.PI) / 180
+  let rad = deg2rad(45)
+  camera.position.x = pivot.x + distance * Math.cos(rad)
+  camera.position.z = pivot.z + distance * Math.sin(rad)
+  camera.lookAt(pivot)
 
-  for (const a of angles) {
-    const rad = deg2rad(a)
-    // Place camera around pivot on XZ plane
-    camera.position.x = pivot.x + distance * Math.cos(rad)
-    camera.position.z = pivot.z + distance * Math.sin(rad)
-    camera.lookAt(pivot)
+  render(renderer, scene, camera, /*useSsaa*/ false)
+  screenshotBuffers.push(await captureScreenshotAsBuffer(glCtx))
 
-    // Render & capture
-    render(renderer, scene, camera, /*useSsaa*/ false)
-    // We'll store each screenshot as a Buffer
-    const buffer = await captureScreenshotAsBuffer(glCtx)
-    screenshotBuffers.push(buffer)
-  }
+  // --- 4) ANGLE 135° around the pivot
+  rad = deg2rad(135)
+  camera.position.x = pivot.x + distance * Math.cos(rad)
+  camera.position.z = pivot.z + distance * Math.sin(rad)
+  camera.lookAt(pivot)
+
+  render(renderer, scene, camera, /*useSsaa*/ false)
+  screenshotBuffers.push(await captureScreenshotAsBuffer(glCtx))
 
   // 9) Stitch the 4 buffers into one image (2x2)
   //    Then return that as the response (image/png)
