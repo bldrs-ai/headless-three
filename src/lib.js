@@ -121,8 +121,21 @@ export function captureScreenshot(glCtx) {
  * Takes a screenshot of the scene from the camera and writes it out
  * to a png.
  */
-export function saveScreenshot(glCtx, outputFilename = 'screenshot.png') {
-  captureScreenshot(glCtx).pipe(fs.createWriteStream(outputFilename))
+export function saveScreenshot(glCtx, outputFilename = 'screenshot.png', returnBuffer = false) {
+  if (!returnBuffer) {
+    // Default: write to file
+    captureScreenshot(glCtx).pipe(fs.createWriteStream(outputFilename))
+    return
+  }
+
+  // If `returnBuffer` is true, accumulate the stream into a Buffer and resolve it
+  return new Promise((resolve, reject) => {
+    const chunks = []
+    captureScreenshot(glCtx)
+      .on('data', (chunk) => chunks.push(chunk))
+      .on('end', () => resolve(Buffer.concat(chunks)))
+      .on('error', (err) => reject(err))
+  })
 }
 
 

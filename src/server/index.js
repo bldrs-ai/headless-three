@@ -1,7 +1,7 @@
 import express from 'express'
 import * as Sentry from '@sentry/node'
 import debug, { INFO } from '../debug.js'
-import renderHandler from './render.js'
+import { renderHandler, renderPanoramicHandler } from './render.js'
 import healthcheckHandler from './healthcheck.js'
 import { createRequestLogger } from '../logging.js'
 
@@ -41,6 +41,7 @@ app.use(createRequestLogger())
 // Register our routes and their respective handlers
 app.get('/healthcheck', healthcheckHandler)
 app.post('/render', renderHandler)
+app.post('/renderPanoramic', renderPanoramicHandler)
 
 // Install Sentry error handler after all routes but before any other error handlers
 app.use(Sentry.Handlers.errorHandler())
