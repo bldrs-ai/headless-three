@@ -20,9 +20,7 @@ jobs:
     name: Build application
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        id: checkout
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Create temporary .npmrc for GitHub Actions
         run: |
