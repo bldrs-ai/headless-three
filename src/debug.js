@@ -1,10 +1,8 @@
-/* eslint-disable no-unused-vars */
 export const OFF = 4
 export const ERROR = 3
 export const WARN = 2 // Use this as default for prod.  Should never see these messages.
 export const INFO = 1
 export const DEBUG = 0
-/* eslint-enable no-unused-vars */
 let DEBUG_LEVEL = INFO
 
 
@@ -39,7 +37,6 @@ export function disableDebug() {
  * away log messages.
  */
 const mockLog = {
-  /* eslint-disable no-empty-function */
   log: () => {},
   warn: () => {},
   error: () => {},

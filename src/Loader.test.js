@@ -1,7 +1,6 @@
 import {load} from './Loader'
 import './fetch-polyfill'
-import * as fs from 'fs';
-import path from 'path';
+import path from 'path'
 
 // TODO(pablo): export and reuse when bun bug is fixed
 // https://github.com/oven-sh/bun/issues/6335
@@ -18,7 +17,7 @@ describe('Loader', () => {
   // TODO(pablo): this should probably increment the value or smth to
   // make each UUID unique.
   beforeEach(() => {
-    mathRandomSpy = jest.spyOn(Math, 'random').mockReturnValue(0.5);
+    mathRandomSpy = jest.spyOn(Math, 'random').mockReturnValue(0.5)
   })
   afterEach(() => {
     mathRandomSpy.mockRestore()
@@ -65,38 +64,38 @@ describe('Loader', () => {
 
   // New Test: Loads a model from a file:// URL
   it('loads a model with encoded filename from a file:// URL', async () => {
-    const onProgress = jest.fn();
-    const onUnknownType = jest.fn();
-    const onError = jest.fn();
+    const onProgress = jest.fn()
+    const onUnknownType = jest.fn()
+    const onError = jest.fn()
 
     // Ensure APP_ENV is not 'prod' to enable file:// loading
-    process.env.APP_ENV = 'development';
+    process.env.APP_ENV = 'development'
 
     // Define the file path and decoded path
-    const relativeFilePath = './models/ifc/index%20test.ifc';
+    const relativeFilePath = './models/ifc/index%20test.ifc'
 
     // Resolve the relative path to an absolute path
-    const absoluteFilePath = path.resolve(relativeFilePath);
-    const fileURL = new URL(`file://${absoluteFilePath}`);
+    const absoluteFilePath = path.resolve(relativeFilePath)
+    const fileURL = new URL(`file://${absoluteFilePath}`)
 
     const model = await load(
       fileURL,
       onProgress,
       onUnknownType,
       onError
-    );
+    )
 
     // Assertions
-    expect(onUnknownType).not.toHaveBeenCalled();
-    expect(onError).not.toHaveBeenCalled();
-    // expect(onProgress).toHaveBeenCalled(); // Uncomment if progress events are emitted
-    expect(model).toBeDefined();
-    expect(model.isObject3D).toBe(true);
+    expect(onUnknownType).not.toHaveBeenCalled()
+    expect(onError).not.toHaveBeenCalled()
+    // expect(onProgress).toHaveBeenCalled() // Uncomment if progress events are emitted
+    expect(model).toBeDefined()
+    expect(model.isObject3D).toBe(true)
 
     // Clean up
-    delete process.env.APP_ENV;
-    jest.restoreAllMocks();
-  });
+    delete process.env.APP_ENV
+    jest.restoreAllMocks()
+  })
 
 
   // TODO(pablo): Dies with 'Trace: Loader error during parse:

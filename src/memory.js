@@ -25,8 +25,8 @@ export class Memory {
    * @return {string} - memory usage result for browser systems
    */
   static checkBrowserMemory() {
-    if (window && window.performance && window.performance.memory) {
-      const memoryUsage = window.performance.memory
+    if (global.window && global.window.performance && global.window.performance.memory) {
+      const memoryUsage = global.window.performance.memory
       const usedJSHeapSize = (memoryUsage.usedJSHeapSize / 1024 / 1024).toFixed(3)
       
       return `JS heap allocated ${usedJSHeapSize} MB`
@@ -51,7 +51,6 @@ export class Memory {
   
 
 // Adding memory property to window.performance if not defined
-if (typeof window !== 'undefined' && window.performance && !window.performance.memory) {
-  window.performance.memory = {}
+if (typeof window !== 'undefined' && global.window.performance && !global.window.performance.memory) {
+  global.window.performance.memory = {}
 }
-  

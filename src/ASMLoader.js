@@ -18,9 +18,10 @@ import * as THREE from 'three'
 export default class ASMLoader {
   constructor() {
   }
-  parse(data, basePath, onLoad, onError) {
-    const model = JSON.parse(data)
+  parse(/* data, basePath, onLoad, onError */) {
+    // const model = JSON.parse(data)
+    console.warn('ASMLoader#parse: not implemented')
     const axesHelper = new THREE.AxesHelper(5)
-    return axeshelper
+    return axesHelper
   }
 }

@@ -1,4 +1,3 @@
-/* eslint-disable no-magic-numbers */
 import {
   assertTrue,
   assertDefined,
@@ -11,7 +10,7 @@ test('assert', () => {
   try {
     assertTrue(false, 'Should fail')
     throw new Error('False assert test should have thrown')
-  } catch (e) {
+  } catch {
     // Expected
   }
 })
@@ -108,6 +107,6 @@ class TestVarargs {
    * @param {any} b test arg, possibly undefined
    */
   constructor(a, b) {
-    assertDefined(...arguments)
+    assertDefined(a, b)
   }
 }

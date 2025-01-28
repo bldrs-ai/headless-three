@@ -18,7 +18,7 @@ class Environment {
    * Determines the runtime environment
    */
   static checkEnvironment() {
-    const isBrowser = typeof window !== 'undefined' && typeof window.document !== 'undefined';
+    const isBrowser = typeof window !== 'undefined' && typeof global.window.document !== 'undefined';
     const isNode = typeof global !== 'undefined' &&
       typeof global.process !== 'undefined' &&
       global.process.versions &&

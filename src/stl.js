@@ -1,4 +1,4 @@
-import {BufferGeometry, Mesh, MeshLambertMaterial} from 'three'
+import {Mesh, MeshLambertMaterial} from 'three'
 
 
 /**

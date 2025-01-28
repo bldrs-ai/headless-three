@@ -8,7 +8,6 @@ import {
   parseCamera,
 } from './lib.js'
 import {load} from './Loader.js'
-import {parseUrl} from './urls.js'
 import debug from './debug.js'
 import {supportedTypesUsageStr} from './Filetype.js'
 
