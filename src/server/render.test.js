@@ -1,5 +1,6 @@
-import { getMockRes } from '@jest-mock/express';
-import renderHandler from './render.js';
+import {getMockRes} from '@jest-mock/express'
+import {renderHandler} from './render.js'
+
 
 describe('/render', () => {
   it('should return a 400 if no body is provided', async () => {

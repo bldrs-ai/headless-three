@@ -5,7 +5,7 @@ describe('matcher', () => {
   it('matches simple regex', () => {
     const cb = jest.fn()
     const fail = jest.fn()
-    matcher('/share/v/p/index.ifc', /\/share\/v\/p\/([\w\/]+)/)
+    matcher('/share/v/p/index.ifc', /\/share\/v\/p\/([\w/]+)/)
       .then(cb)
       .or(fail)
     expect(cb).toHaveBeenCalledTimes(1)
@@ -15,9 +15,9 @@ describe('matcher', () => {
   it('falls thru to second regex', () => {
     const cb = jest.fn()
     const fail = jest.fn()
-    matcher('/share/v/gh/bldrs-ai/Share/main/blob/public/index.ifc', /\/share\/v\/p\/([\w\/]+)/)
+    matcher('/share/v/gh/bldrs-ai/Share/main/blob/public/index.ifc', /\/share\/v\/p\/([\w/]+)/)
       .then(fail)
-      .or(/\/share\/v\/gh\/(?<org>[\w-]+)\/(?<repo>\w+)\/(?<ref>\w+)\/blob\/(?<path>[\w\/.]+)/)
+      .or(/\/share\/v\/gh\/(?<org>[\w-]+)\/(?<repo>\w+)\/(?<ref>\w+)\/blob\/(?<path>[\w/.]+)/)
       .then((match) => {
         const {org, repo, ref, path} = match.groups
         expect(org).toBe('bldrs-ai')
@@ -35,7 +35,7 @@ describe('matcher', () => {
     const cb = jest.fn()
     const fail = jest.fn()
     matcher('https://github.com/Swiss-Property-AG/Momentum-Public/blob/main/Momentum.ifc',
-            /https?:\/\/github.com\/(?<org>[\w-]+)\/(?<repo>[\w-]+)\/blob\/(?<ref>[\w-]+)\/(?<path>[\w\/.-]+)/)
+            /https?:\/\/github.com\/(?<org>[\w-]+)\/(?<repo>[\w-]+)\/blob\/(?<ref>[\w-]+)\/(?<path>[\w/.-]+)/)
       .then((match) => {
         const {org, repo, ref, path} = match.groups
         expect(org).toBe('Swiss-Property-AG')

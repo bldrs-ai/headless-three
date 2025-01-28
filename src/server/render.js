@@ -1,9 +1,9 @@
 import {
   captureScreenshot, fitModelToFrame, initThree, parseCamera, render
 } from '../lib.js'
-import { parseUrl } from '../urls.js'
-import { load } from '../Loader.js'
-import { createTaggedLogger } from '../logging.js'
+import {parseUrl} from '../urls.js'
+import {load} from '../Loader.js'
+import {createTaggedLogger} from '../logging.js'
 import * as THREE from 'three'
 import Jimp from 'jimp'
 
@@ -77,7 +77,9 @@ export const renderHandler = async (req, res) => {
   captureScreenshot(glCtx).pipe(res)
 }
 
+
 const renderPanoramicLogger = createTaggedLogger('/renderPanoramic')
+
 
 /**
  * Example usage:
@@ -249,6 +251,7 @@ export const renderPanoramicHandler = async (req, res) => {
   }
 }
 
+
 /**
  * Helper: Captures a PNG screenshot from your existing `captureScreenshot`
  * but returns the PNG data as a Buffer.
@@ -262,6 +265,7 @@ async function captureScreenshotAsBuffer(glCtx) {
       .on('error', (err) => reject(err))
   })
 }
+
 
 /**
  * Helper: Given 4 PNG buffers, stitch them into a 2x2 image using Jimp.

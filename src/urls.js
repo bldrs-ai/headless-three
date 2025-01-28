@@ -41,7 +41,7 @@ export function parseUrl(url) {
   const baseUrlStr = baseUrl.toString()
   matcher(
     baseUrlStr,
-    /https?:\/\/github.com\/(?<org>[\w%.-]+)\/(?<repo>[\w%.-]+)\/blob\/(?<ref>[\w%.-]+)\/(?<path>[\w\/%.-]+)/
+    /https?:\/\/github.com\/(?<org>[\w%.-]+)\/(?<repo>[\w%.-]+)\/blob\/(?<ref>[\w%.-]+)\/(?<path>[\w/%.-]+)/
   )
     .then((match) => {
       const {org, repo, ref, path} = match.groups
@@ -53,7 +53,7 @@ export function parseUrl(url) {
         url: new URL(`/${org}/${repo}/${ref}/${path}`, 'https://raw.githubusercontent.com')
       }
     })
-    .or(/\/share\/v\/gh\/(?<org>[\w.-]+)\/(?<repo>[\w.-]+)\/(?<ref>[\w.-]+)\/(?<path>[\w\/%.-]+)/)
+    .or(/\/share\/v\/gh\/(?<org>[\w.-]+)\/(?<repo>[\w.-]+)\/(?<ref>[\w.-]+)\/(?<path>[\w/%.-]+)/)
     .then((match) => {
       const {org, repo, ref, path} = match.groups
       parsed.type = SOURCE_TYPE.VCS
@@ -93,7 +93,6 @@ export function parseCoords(url) {
       const [k, v] = p.split(':', 2)
       params[k] = v
     })
-    params = params
     if ('c' in params) {
       c = params['c'].split(',').map(f => parseFloat(f))
     }
