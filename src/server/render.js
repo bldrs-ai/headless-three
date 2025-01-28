@@ -27,11 +27,10 @@ export const renderHandler = async (req, res) => {
   const parsedUrl = parseUrl(modelUrl)
   renderLogger.log('debug', 'server#post, parsedUrl:', parsedUrl)
   if (parsedUrl.target === undefined) {
-    renderLogger.warn(msg)
+    renderLogger.warn('File not found')
     res.status(404).send(`Cannot parse URL: ${modelUrl}`).end()
     return
   }
-  const [px, py, pz, tx, ty, tz] = parsedUrl.params.c ? parseCamera(parsedUrl.params.c) : [0,0,0,0,0,0]
   const targetUrl = parsedUrl.target.url
   let model
   try {
@@ -76,9 +75,6 @@ export const renderHandler = async (req, res) => {
   res.setHeader('content-type', 'image/png')
   captureScreenshot(glCtx).pipe(res)
 }
-
-
-const renderPanoramicLogger = createTaggedLogger('/renderPanoramic')
 
 
 /**

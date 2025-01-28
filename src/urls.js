@@ -33,10 +33,6 @@ export function parseUrl(url) {
   })
   parsed.params = params
 
-  function apply(str, re) {
-    return re.match(str)
-  }
-
   const baseUrl = url.origin == 'null' ? url : new URL(url.pathname, url.origin)
   const baseUrlStr = baseUrl.toString()
   matcher(
@@ -65,7 +61,7 @@ export function parseUrl(url) {
       }
     })
     .or(/\/share\/v\/p\/index.ifc/)
-    .then((match) => {
+    .then(() => {
       parsed.type = SOURCE_TYPE.VCS
       parsed.target = {
         organization: 'bldrs-ai',
@@ -113,7 +109,7 @@ export function maybeResolveLocalPath(maybePathStr) {
     if (maybePathStr.includes(':/')) {
       try {
         return new URL(maybePathStr)
-      } catch (e) {
+      } catch {
         // fallthru to undefined
       }
     } else {

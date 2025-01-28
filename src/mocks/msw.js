@@ -22,7 +22,7 @@ export const handlers = [
         ctx.status(200),
         ctx.text(fileContent)
       );
-    } catch (error) {
+    } catch {
       // If the file is not found or there's an error, return a 404 response
       return res(
         ctx.status(404),

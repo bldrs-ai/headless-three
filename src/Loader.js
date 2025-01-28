@@ -6,7 +6,7 @@ import {IFCLoader} from './IFCLoader.js'
 //import {IFCLoader} from 'web-ifc-three/web-ifc-three/dist/web-ifc-three.js'
 // TODO(pablo): This would be nice, but as built, it has a dynamic require of 'fs' that breaks.
 //import {IFCLoader} from 'three/addons/loaders/IFCLoader.js'
-import {Rhino3dmLoader} from 'three/addons/loaders/3DMLoader.js'
+//import {Rhino3dmLoader} from 'three/addons/loaders/3DMLoader.js'
 import {DRACOLoader} from 'three/addons/loaders/DRACOLoader.js'
 import {FBXLoader} from 'three/addons/loaders/FBXLoader.js'
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js'
@@ -54,19 +54,17 @@ export async function load(
   const urlStr = url.toString()
   if (urlStr.startsWith('file://') && process.env.APP_ENV !== 'prod') {
     // Decode the URL to handle any percent-encoded characters
-    const decodedPath = decodeURIComponent(urlStr.substring('file://'.length));
-
+    const decodedPath = decodeURIComponent(urlStr.substring('file://'.length))
     try {
-        // Use the decoded path in fs.statSync and fs.readFileSync
-        const stats = fs.statSync(decodedPath);
-        const fileSize = stats.size;
-        modelData = fs.readFileSync(decodedPath, { flag: 'r' });
-
-        // Additional logic here if needed
+      // Use the decoded path in fs.statSync and fs.readFileSync
+      // const stats = fs.statSync(decodedPath)
+      // const fileSize = stats.size
+      modelData = fs.readFileSync(decodedPath, {flag: 'r'})
+      // Additional logic here if needed
     } catch (error) {
-        console.error(`Error reading file: ${error.message}`);
+      console.error(`Error reading file: ${error.message}`)
     }
-} else {
+  } else {
     modelData = (await axios.get(
       urlStr,
       { responseType:
@@ -94,7 +92,7 @@ export async function load(
     model = fixupCb(model)
   }
   if (process.env.ENGINE === 'webifc') {
-    const date = new Date()
+    const date = new Date
     const options = {
       year: 'numeric',
       month: 'short',
@@ -114,7 +112,6 @@ export async function load(
 
 
 async function readModel(loader, modelData, basePath, isLoaderAsync) {
-  // debug().log(`Loader#readModel: loader(${loader.constructor.name}) basePath(${basePath}) isAsync(${isLoaderAsync}), data type: `, typeof modelData)
   let model
   // GLTFLoader is unique so far in using an onLoad and onError.
   // TODO(pablo): GLTF also generates errors for texture loads, but
@@ -143,47 +140,24 @@ async function readModel(loader, modelData, basePath, isLoaderAsync) {
 }
 
 
-// TODO(pablo): not used.  Would be a higher-level API into the three
-// loader system.  Maybe works better for complex loaders. TBD.
-async function delegateLoad(url) {
-  const urlStr = url.toString()
-  return await new Promise((resolve, reject) => {
-    loader.load(
-      urlStr,
-      (model) => {
-        debug().log('Loaders#delegateLoad:', model)
-        resolve(model)
-      },
-      (progressEvent) => {
-        onProgress()
-      },
-      (errorEvent) => {
-        onError()
-        reject(errorEvent)
-      },
-    )
-  })
-}
-
-
 /**
  * @param {string} pathname
  * @return {Loader|undefined}
  */
 async function findLoader(pathname) {
-  const {parts, extension} = Filetype.splitAroundExtension(pathname)
+  const {/* parts, */ extension} = Filetype.splitAroundExtension(pathname)
   let loader
   let isLoaderAsync = false
   let isFormatText = false
   let fixupCb
   switch (extension) {
     case '.bld': {
-      loader = new BLDLoader()
+      loader = new BLDLoader
       isFormatText = true
       break
     }
     case '.fbx': {
-      loader = new FBXLoader()
+      loader = new FBXLoader
       break
     }
     case '.ifc': {
@@ -267,7 +241,7 @@ function newGltfLoader() {
  * the origin on load.
  */
 async function newIfcLoader() {
-  const loader = new IFCLoader()
+  const loader = new IFCLoader
   // TODO(pablo): Now using Conway, it's working, but not sure how!
   // loader.ifcManager.setWasmPath('./')
   // loader.ifcManager.setWasmPath('../web-ifc/')
@@ -279,7 +253,7 @@ async function newIfcLoader() {
   await loader.ifcManager.applyWebIfcConfig({
     COORDINATE_TO_ORIGIN: true,
     USE_FAST_BOOLS: true
-  });
+  })
 
   // TODO(pablo): maybe useful to print the coordination matrix from
   // the normalized view for debug?  Will need to be called after
@@ -290,6 +264,26 @@ async function newIfcLoader() {
 }
 
 
-function toShortStr(buffer) {
-  return buffer.slice(0, 128)
+// TODO(pablo): not used.  Would be a higher-level API into the three
+// loader system.  Maybe works better for complex loaders. TBD.
+/*
+async function delegateLoad(url) {
+  const urlStr = url.toString()
+  return await new Promise((resolve, reject) => {
+    loader.load(
+      urlStr,
+      (model) => {
+        debug().log('Loaders#delegateLoad:', model)
+        resolve(model)
+      },
+      (progressEvent) => {
+        onProgress()
+      },
+      (errorEvent) => {
+        onError()
+        reject(errorEvent)
+      },
+    )
+  })
 }
+*/

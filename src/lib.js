@@ -3,7 +3,15 @@ import fs from 'fs'
 import gl from 'gl'
 import {JSDOM} from 'jsdom'
 import {PNG} from 'pngjs'
-import * as THREE from 'three'
+import {
+  AmbientLight,
+  Box3,
+  DirectionalLight,
+  PerspectiveCamera,
+  Scene,
+  Vector3,
+  WebGLRenderer,
+} from 'three'
 import {EffectComposer} from 'three/addons/postprocessing/EffectComposer.js'
 import {SSAARenderPass} from 'three/addons/postprocessing/SSAARenderPass.js'
 import {ShaderPass} from 'three/addons/postprocessing/ShaderPass.js'
@@ -14,7 +22,7 @@ import {GammaCorrectionShader} from 'three/addons/shaders/GammaCorrectionShader.
 export function initDom() {
   const dom = new JSDOM(`<!DOCTYPE html>`, {pretendToBeVisual: true})
   global.window = dom.window
-  global.document = window.document
+  global.document = dom.window.document
   global.self = global.window
   global.self.URL = url.URL
 
@@ -51,16 +59,16 @@ export function initGl(width, height) {
 
 /** Setup fullscreen renderer. */
 export function initRenderer(glCtx, width, height) {
-  const renderer = new THREE.WebGLRenderer({context: glCtx, antialias: true})
+  const renderer = new WebGLRenderer({context: glCtx, antialias: true})
   renderer.setSize(width, height)
-  renderer.setPixelRatio(window.devicePixelRatio || 1);
+  renderer.setPixelRatio(global.window.devicePixelRatio || 1);
   renderer.setClearColor(0xffffff, 1)
   return renderer
 }
 
 
 export function initCamera(fov = 45, aspect = 3) {
-  const camera = new THREE.PerspectiveCamera(fov, aspect)
+  const camera = new PerspectiveCamera(fov, aspect)
   return camera
 }
 
@@ -68,23 +76,23 @@ export function initCamera(fov = 45, aspect = 3) {
 /** Setup a couple directional lights and one ambient to make the scene look good. */
 export function initLights(scene) {
   // web-ifc-three example/src/scene.js
-  const directionalLight1 = new THREE.DirectionalLight(0xffeeff, 0.8)
+  const directionalLight1 = new DirectionalLight(0xffeeff, 0.8)
   directionalLight1.position.set(1, 1, 1)
   scene.add(directionalLight1)
-  const directionalLight2 = new THREE.DirectionalLight(0xffffff, 0.8)
+  const directionalLight2 = new DirectionalLight(0xffffff, 0.8)
   directionalLight2.position.set(-1, 0.5, -1)
   scene.add(directionalLight2)
-  const ambientLight = new THREE.AmbientLight(0xffffee, 0.25)
+  const ambientLight = new AmbientLight(0xffffee, 0.25)
   scene.add(ambientLight)
 }
 
 
 export function initThree(w = 1024, h = 768) {
   const aspect = w / h
-  const dom = initDom()
+  initDom()
   const glCtx = initGl(w, h)
   const renderer = initRenderer(glCtx, w, h)
-  const scene = new THREE.Scene()
+  const scene = new Scene
   initLights(scene)
   const camera = initCamera(45, aspect)
   return [glCtx, renderer, scene, camera]
@@ -141,14 +149,14 @@ export function saveScreenshot(glCtx, outputFilename = 'screenshot.png', returnB
 
 /** Uses camera-controls library to zoom the camera to fill dom view with the model. */
 export function fitModelToFrame(domElement, scene, model, camera) {
-  const boundingBox = new THREE.Box3().setFromObject(model)
-  const sceneSize = new THREE.Vector3()
+  const boundingBox = new Box3().setFromObject(model)
+  const sceneSize = new Vector3
   boundingBox.getSize(sceneSize)
-  const sceneCenter = new THREE.Vector3()
+  const sceneCenter = new Vector3
   boundingBox.getCenter(sceneCenter)
 
   /*
-  const helper = new THREE.Box3Helper(boundingBox, 0x000000)
+  const helper = new Box3Helper(boundingBox, 0x000000)
   scene.add(helper)
   */
 
@@ -163,12 +171,12 @@ export function fitModelToFrame(domElement, scene, model, camera) {
   const zDistX = halfOfBBWidth / tanOfHalfX
   const zDistY = halfOfBBHeight / tanOfHalfY
   const zDist = Math.max(zDistX, zDistY)
-  const frontOfBBRelToOrigin = sceneSize.z
-  const move = new THREE.Vector3(sceneCenter.x, sceneCenter.y, sceneCenter.z + ( ( sceneSize.z / 2 ) + zDist ) )
+  const move = new Vector3(sceneCenter.x, sceneCenter.y, sceneCenter.z + ( ( sceneSize.z / 2 ) + zDist ) )
   camera.position.set(move.x, move.y, move.z)
-  const cx = camera.position.x
-  const cy = camera.position.y
-  const cz = camera.position.z
+  // const frontOfBBRelToOrigin = sceneSize.z
+  // const cx = camera.position.x
+  // const cy = camera.position.y
+  // const cz = camera.position.z
   // console.log(`halfAngle(${halfAngle}), tanOfHalfY(${tanOfHalfY}), tanOfHalfX(${tanOfHalfX}), halfOfBBWidth(${halfOfBBWidth}), halfOfBBHeight(${halfOfBBHeight}) camera.position:`, cx, cy, cz)
 }
 
@@ -180,7 +188,7 @@ export function fitModelToFrame(domElement, scene, model, camera) {
 export function render(renderer, scene, camera, useSsaa = false) {
   if (useSsaa) {
     const composer = new EffectComposer(renderer)
-    composer.setPixelRatio(window.devicePixelRatio || 1)
+    composer.setPixelRatio(global.window.devicePixelRatio || 1)
     // composer.addPass(new RenderPass(scene, camera))
     const ssaaPass = new SSAARenderPass(scene, camera)
     ssaaPass.sampleLevel = 2

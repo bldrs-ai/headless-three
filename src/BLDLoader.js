@@ -1,6 +1,5 @@
-import {AxesHelper, Object3D} from 'three'
+import {Object3D} from 'three'
 import {load} from './Loader.js'
-import {parseCoords} from './urls.js'
 
 
 /** Similar to https://github.com/mrdoob/three.js/wiki/JSON-Object-Scene-format-4 */
@@ -8,7 +7,7 @@ export default class BLDLoader {
   constructor() {}
 
 
-  async parse(data, basePath, onLoad, onError) {
+  async parse(data, basePath /*, onLoad, onError */) {
     const model = JSON.parse(data)
     const root = new Object3D
     if (model.scale) {
