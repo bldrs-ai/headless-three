@@ -12,6 +12,7 @@ Requires Node v18+.
 
 ```
 $ yarn install
+$ yarn build
 $ yarn test
 ```
 
