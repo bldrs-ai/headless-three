@@ -146,38 +146,130 @@ export function saveScreenshot(glCtx, outputFilename = 'screenshot.png', returnB
   })
 }
 
-
-/** Uses camera-controls library to zoom the camera to fill dom view with the model. */
-export function fitModelToFrame(domElement, scene, model, camera) {
+/**
+ * FitModelToFrame (z axis) with angle helper
+ */
+export function fitModelToFrameWithAngle(domElement, scene, model, camera, angleDeg = 0) {
+  // 1) Compute bounding box, size, and center
   const boundingBox = new Box3().setFromObject(model)
-  const sceneSize = new Vector3
+  const sceneSize   = new Vector3()
   boundingBox.getSize(sceneSize)
-  const sceneCenter = new Vector3
+  const sceneCenter = new Vector3()
   boundingBox.getCenter(sceneCenter)
 
-  /*
-  const helper = new Box3Helper(boundingBox, 0x000000)
-  scene.add(helper)
-  */
+  // 2) Same “fit to frame” math (vertical FOV) to find how far back we must be
+  const radFromDeg  = (deg) => (deg * Math.PI) / 180
+  const halfAngle   = radFromDeg(camera.fov / 2)
+  const tanOfHalfY  = Math.tan(halfAngle)
+  const tanOfHalfX  = tanOfHalfY * camera.aspect
 
-  function radFromDeg(degrees) {
-    return (degrees * Math.PI) / 180
+  // Half extents of bounding box
+  const halfW = sceneSize.x * 0.5
+  const halfH = sceneSize.y * 0.5
+
+  // Distance so the box fits horizontally vs. vertically
+  const distX = halfW / tanOfHalfX
+  const distY = halfH / tanOfHalfY
+  const neededDistance = Math.max(distX, distY)
+
+  // Optionally add half the model’s depth so we’re “in front” of it
+  // as in your original code. (Or you can skip if you prefer.)
+  const halfDepth = sceneSize.z * 0.5
+  const totalDistance = neededDistance + halfDepth
+
+  // 3) Position the camera around the Y-axis by angleDeg
+  const angleRad = radFromDeg(angleDeg)
+  // By default, let’s assume “zero degrees” is along +Z,
+  // so we rotate XZ around sceneCenter.y.
+  const cx = sceneCenter.x + totalDistance * Math.sin(angleRad)
+  const cz = sceneCenter.z + totalDistance * Math.cos(angleRad)
+
+  // Keep camera at roughly the same Y as the center; you can adjust if you want a tilt.
+  const cy = sceneCenter.y
+
+  camera.position.set(cx, cy, cz)
+  camera.lookAt(sceneCenter)
+}
+
+
+/**
+ * Adjusts the camera so that the given model fits the DOM element’s view.
+ *
+ * @param {HTMLElement} domElement - The DOM element the view fills.
+ * @param {Scene} scene - The Three.js scene.
+ * @param {Object3D} model - The 3D model whose bounding box is used.
+ * @param {Camera} camera - The camera to adjust.
+ * @param {boolean} [useZ=true] - If true (the default) position the camera along Z;
+ *                                if false use a top-down (Y) view.
+ */
+export function fitModelToFrame(domElement, scene, model, camera, useZ = true) {
+  // Get the model’s bounding box, size, and center.
+  const boundingBox = new Box3().setFromObject(model)
+  const sceneSize = new Vector3()
+  boundingBox.getSize(sceneSize)
+  const sceneCenter = new Vector3()
+  boundingBox.getCenter(sceneCenter)
+
+  // Helper to convert degrees to radians.
+  const radFromDeg = degrees => (degrees * Math.PI) / 180
+
+  if (useZ) {
+    // === Default: Camera is positioned along Z to look at the model ===
+
+    // Calculate the half-angle from the camera’s field-of-view.
+    const halfAngle = radFromDeg(camera.fov / 2)
+    const tanOfHalfY = Math.tan(halfAngle)
+    // The horizontal FOV (in radians) is effectively scaled by the aspect ratio.
+    const tanOfHalfX = tanOfHalfY * camera.aspect
+
+    // Determine half the width and half the height of the bounding box.
+    const halfOfBBWidth = sceneSize.x / 2
+    const halfOfBBHeight = sceneSize.y / 2
+
+    // Compute the distance needed along Z to fit the model.
+    const zDistX = halfOfBBWidth / tanOfHalfX
+    const zDistY = halfOfBBHeight / tanOfHalfY
+    const zDist = Math.max(zDistX, zDistY)
+
+    // Offset the camera so that the front face of the bounding box (sceneCenter.z + sceneSize.z/2)
+    // plus the computed distance positions the model within view.
+    const newPos = new Vector3(
+      sceneCenter.x,
+      sceneCenter.y,
+      sceneCenter.z + (sceneSize.z / 2 + zDist)
+    )
+    camera.position.set(newPos.x, newPos.y, newPos.z)
+    camera.lookAt(sceneCenter)
+  } else {
+    // === Top-down view: Camera is positioned above (along Y) to view the model from above ===
+
+    // For a top-down view, assume the camera will look directly downward.
+    // (If needed, you can adjust the up vector, e.g.: camera.up.set(0, 0, -1);)
+
+    // In the top-down configuration, the “footprint” of the model is given by its x and z dimensions.
+    const halfAngle = radFromDeg(camera.fov / 2)
+    const tanOfHalfY = Math.tan(halfAngle)
+    const tanOfHalfX = tanOfHalfY * camera.aspect
+
+    const halfOfBBWidth = sceneSize.x / 2
+    const halfOfBBDepth = sceneSize.z / 2
+
+    // Compute the distance needed along Y so that both the width and depth fit in the view.
+    const distForWidth = halfOfBBWidth / tanOfHalfX
+    const distForDepth = halfOfBBDepth / tanOfHalfY
+    const requiredDistance = Math.max(distForWidth, distForDepth)
+
+    // Place the camera above the model.
+    // Here we assume the model extends from sceneCenter.y - sceneSize.y/2 to sceneCenter.y + sceneSize.y/2.
+    // To have the entire model “in front” of the camera, we add the half-height.
+    const newPos = new Vector3(
+      sceneCenter.x,
+      sceneCenter.y + (sceneSize.y / 2 + requiredDistance),
+      sceneCenter.z
+    )
+    camera.position.set(newPos.x, newPos.y, newPos.z)
+    camera.lookAt(sceneCenter)
   }
-  const halfAngle = radFromDeg(camera.fov / 2)
-  const tanOfHalfY = Math.tan(halfAngle)
-  const tanOfHalfX = tanOfHalfY * camera.aspect
-  const halfOfBBWidth = sceneSize.x / 2
-  const halfOfBBHeight = sceneSize.y / 2
-  const zDistX = halfOfBBWidth / tanOfHalfX
-  const zDistY = halfOfBBHeight / tanOfHalfY
-  const zDist = Math.max(zDistX, zDistY)
-  const move = new Vector3(sceneCenter.x, sceneCenter.y, sceneCenter.z + ( ( sceneSize.z / 2 ) + zDist ) )
-  camera.position.set(move.x, move.y, move.z)
-  // const frontOfBBRelToOrigin = sceneSize.z
-  // const cx = camera.position.x
-  // const cy = camera.position.y
-  // const cz = camera.position.z
-  // console.log(`halfAngle(${halfAngle}), tanOfHalfY(${tanOfHalfY}), tanOfHalfX(${tanOfHalfX}), halfOfBBWidth(${halfOfBBWidth}), halfOfBBHeight(${halfOfBBHeight}) camera.position:`, cx, cy, cz)
 }
 
 

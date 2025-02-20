@@ -1,5 +1,5 @@
 import {
-  captureScreenshot, fitModelToFrame, initThree, parseCamera, render
+  captureScreenshot, fitModelToFrame, fitModelToFrameWithAngle, initThree, parseCamera, render
 } from '../lib.js'
 import {parseUrl} from '../urls.js'
 import {load} from '../Loader.js'
@@ -191,14 +191,14 @@ export const renderPanoramicHandler = async (req, res) => {
     }
   })
 
-  camera.position.set(center.x, boundingBox.max.y + size.y, center.z)
-  camera.lookAt(center)
+
+  //camera.position.set(center.x, boundingBox.max.y + size.y, center.z)
+  //camera.lookAt(center)
+  fitModelToFrame(renderer.domElement, scene, model, camera, false)
 
   // f) Render & capture
   render(renderer, scene, camera, /*useSsaa*/ false)
   screenshotBuffers.push(await captureScreenshotAsBuffer(glCtx))
-
-  // 3) THIRD SCREENSHOT – angle 45° around the center
 
   // remove the plane for the last two images
   model.traverse((child) => {
@@ -214,20 +214,13 @@ export const renderPanoramicHandler = async (req, res) => {
 
 
   // --- 3) ANGLE 45° around the pivot
-  const deg2rad = (deg) => (deg * Math.PI) / 180
-  let rad = deg2rad(45)
-  camera.position.x = pivot.x + distance * Math.cos(rad)
-  camera.position.z = pivot.z + distance * Math.sin(rad)
-  camera.lookAt(pivot)
+  fitModelToFrameWithAngle(renderer.domElement, scene, model, camera, 45)
 
   render(renderer, scene, camera, /*useSsaa*/ false)
   screenshotBuffers.push(await captureScreenshotAsBuffer(glCtx))
 
-  // --- 4) ANGLE 135° around the pivot
-  rad = deg2rad(135)
-  camera.position.x = pivot.x + distance * Math.cos(rad)
-  camera.position.z = pivot.z + distance * Math.sin(rad)
-  camera.lookAt(pivot)
+  // --- 4) ANGLE 225° around the pivot
+  fitModelToFrameWithAngle(renderer.domElement, scene, model, camera, 225)
 
   render(renderer, scene, camera, /*useSsaa*/ false)
   screenshotBuffers.push(await captureScreenshotAsBuffer(glCtx))

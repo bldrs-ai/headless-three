@@ -2,7 +2,7 @@
   "type": "module",
   "main": "src/headless.js",
   "scripts": {
-    "build": "yarn clean && yarn setup && yarn build-headless && yarn build-server",
+    "build": "yarn setup && yarn build-headless && yarn build-server",
     "clean": "run-script-os",
     "clean:linux:darwin": "rm -rf ./build",
     "clean:win32": "rmdir /s /q build",
@@ -13,15 +13,17 @@
     "build-server-conway": "node esbuild/server.esbuild.js",
     "build-server-webifc": "node esbuild/server-webifc.esbuild.js",
     "lint": "eslint",
-    "setup": "mkdir build && cp node_modules/gl/build/Release/webgl.node build",
+    "setup": "yarn clean && mkdir build && cp node_modules/gl/build/Release/webgl.node build && cp node_modules/@bldrs-ai/conway/compiled/dependencies/conway-geom/Dist/* build && cp node_modules/web-ifc/*.wasm build",
     "serve": "node --enable-source-maps build/server.node.js",
+    "serve-single-thread":"run-script-os",
+    "serve-single-thread:linux:darwin": "FORCE_SINGLE_THREAD='true' yarn serve",
+    "serve-single-thread:win32": "set FORCE_SINGLE_THREAD='true'&& yarn serve",
     "serve-webifc": "node --enable-source-maps build/server-webifc.node.js",
     "test": "jest",
     "prepare": "husky"
   },
   "dependencies": {
-    "@bldrs-ai/conway": "0.7.727",
-    "@bldrs-ai/conway-web-ifc-adapter": "0.5.013",
+    "@bldrs-ai/conway-web-ifc-adapter": "0.12.800",
     "@sentry/node": "7.64.0",
     "axios": "1.4.0",
     "camera-controls": "2.7.0",
@@ -35,7 +37,7 @@
     "pngjs": "7.0.0",
     "run-script-os": "1.1.6",
     "three": "0.149.0",
-    "web-ifc": "0.0.56",
+    "web-ifc": "0.0.67",
     "web-worker": "1.2.0",
     "winston": "3.11.0",
     "xhr2": "0.2.1"

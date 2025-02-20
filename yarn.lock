@@ -1130,20 +1130,21 @@
   resolved "https://registry.npmjs.org/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
-"@bldrs-ai/conway-web-ifc-adapter@0.5.013":
-  version "0.5.13"
-  resolved "https://npm.pkg.github.com/download/@bldrs-ai/conway-web-ifc-adapter/0.5.13/aafdf3e18ea8751dcd05957bd74129bc468bad27#aafdf3e18ea8751dcd05957bd74129bc468bad27"
-  integrity sha512-AyU/055jmF/pZxzasGeuCAAuTZBZUoag2DNxUljs4dUyLl3X5PTcIk8goHu8U7tgqRkp5z4Ux1/VC06q1H09CQ==
+"@bldrs-ai/conway-web-ifc-adapter@0.12.800":
+  version "0.12.800"
+  resolved "https://registry.yarnpkg.com/@bldrs-ai/conway-web-ifc-adapter/-/conway-web-ifc-adapter-0.12.800.tgz#79ade3e15231adc21ee572943b25b92a2edb5ca3"
+  integrity sha512-/KGlzlYs5nXvNxDwssVjbA84s/rdpNeELZ5uyTskAFvK0C65T0LxenxFaz060h1JdCIhth4WoyIlx/DrYVPkSA==
   dependencies:
-    "@bldrs-ai/conway" "0.7.727"
+    "@bldrs-ai/conway" "0.12.800"
     "@types/node" "22.5.5"
     typescript "5.6.2"
 
-"@bldrs-ai/conway@0.7.727":
-  version "0.7.727"
-  resolved "https://npm.pkg.github.com/download/@bldrs-ai/conway/0.7.727/fba7304d25c33e32c8e1e12f944aa8eabddc356d#fba7304d25c33e32c8e1e12f944aa8eabddc356d"
-  integrity sha512-F84DZVXQ5U6xKp5kLrcmN4Q7PdRWTquKpK2S04di0rA6PwRC724i/n1NOCQyLA4961R0e+D+4LW8Feg/dkh97Q==
+"@bldrs-ai/conway@0.12.800":
+  version "0.12.800"
+  resolved "https://registry.yarnpkg.com/@bldrs-ai/conway/-/conway-0.12.800.tgz#e1e69893f81566b732af2ef808a93007106c6c6b"
+  integrity sha512-+DhGa1MzpoV4Xbt9enB4PchAX/832kOfHnxhkduuYQMF+JU5KoFzcByY9okZMAdEpIHrgzpx6N4altvTm5hTcg==
   dependencies:
+    adm-zip "^0.5.16"
     buffer "^6.0.3"
     gl-matrix "^3.4.3"
     seedrandom "^3.0.5"
@@ -2401,6 +2402,11 @@ acorn@^8.14.0:
   version "8.14.0"
   resolved "https://registry.yarnpkg.com/acorn/-/acorn-8.14.0.tgz#063e2c70cac5fb4f6467f0b11152e04c682795b0"
   integrity sha512-cl669nCJTZBsL97OF4kUQm5g5hC2uihk0NxY3WENAC0TYdILVkAyHymAntgxGkl7K+t0cXIrH5siy5S4XkFycA==
+
+adm-zip@^0.5.16:
+  version "0.5.16"
+  resolved "https://registry.yarnpkg.com/adm-zip/-/adm-zip-0.5.16.tgz#0b5e4c779f07dedea5805cdccb1147071d94a909"
+  integrity sha512-TGw5yVi4saajsSEgz25grObGHEUaDrniwvA2qwSC060KfqGPdglhvPMA2lPIoxs3PQIItj2iag35fONcQqgUaQ==
 
 agent-base@6, agent-base@^6.0.2:
   version "6.0.2"
@@ -4266,6 +4272,11 @@ gl@6.0.2:
     node-abi "^3.26.0"
     node-gyp "^9.2.0"
     prebuild-install "^7.1.1"
+
+glm@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/glm/-/glm-1.0.0.tgz#7e857c8886946c9be5a6292378bd6b2e263ad078"
+  integrity sha512-9/ubsXH/3w4pWunc1b3iVY9O/avtwt0kiEM07lydjASWI6CC4oFJHPURlpn8KuluDRlSHwNH6FlHFc5P1SBiJQ==
 
 glob-parent@^6.0.2:
   version "6.0.2"
@@ -7601,10 +7612,12 @@ web-encoding@^1.1.5:
   optionalDependencies:
     "@zxing/text-encoding" "0.9.0"
 
-web-ifc@0.0.56:
-  version "0.0.56"
-  resolved "https://registry.yarnpkg.com/web-ifc/-/web-ifc-0.0.56.tgz#f153378f74f6db865a4ac3df47cafdc237191d27"
-  integrity sha512-jbPW+k57Ci9c0s/eOVLXPdPtxiSZHZgzAmQhbE8Kn6/E/0PNcJA+2Ti/W+F9I5NijVvuUdPPjxtIp9hSqcBjYg==
+web-ifc@0.0.67:
+  version "0.0.67"
+  resolved "https://registry.yarnpkg.com/web-ifc/-/web-ifc-0.0.67.tgz#af012349a62a12a13f06dec9a78bcdcc435af6cc"
+  integrity sha512-6REzs2ulwnhhIt7wV7N2RJAxcP/svVfFj6q13W472iixgrjTUFnm1ttJrpX9HgZBNGpnaC56Nk+YNK6/zqAWqA==
+  dependencies:
+    glm "^1.0.0"
 
 web-streams-polyfill@^3.0.3:
   version "3.2.1"
