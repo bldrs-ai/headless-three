@@ -150,7 +150,6 @@ export const renderPanoramicHandler = async (req, res) => {
   }
 
   const pivot = new THREE.Vector3(0, 0, 0)
-  const distance = camera.position.distanceTo(pivot)
   const screenshotBuffers = []
 
   // --- 1) DEFAULT vantage (fit the model to frame, if no custom camera param)
@@ -168,8 +167,6 @@ export const renderPanoramicHandler = async (req, res) => {
   // b) Decide a Y cut. You can base it on the building’s bounding box:
   const boundingBox = new THREE.Box3().setFromObject(model)
   const size = boundingBox.getSize(new THREE.Vector3())
-  const center = boundingBox.getCenter(new THREE.Vector3())
-
   const roofY = boundingBox.max.y - 0.2 * size.y
 
   // c) Create a plane that clips geometry *above* this roofY
