@@ -150,7 +150,6 @@ export const renderPanoramicHandler = async (req, res) => {
   }
 
   const pivot = new THREE.Vector3(0, 0, 0)
-  const distance = camera.position.distanceTo(pivot)
   const screenshotBuffers = []
 
   // --- 1) DEFAULT vantage (fit the model to frame, if no custom camera param)
@@ -168,8 +167,6 @@ export const renderPanoramicHandler = async (req, res) => {
   // b) Decide a Y cut. You can base it on the building’s bounding box:
   const boundingBox = new THREE.Box3().setFromObject(model)
   const size = boundingBox.getSize(new THREE.Vector3())
-  const center = boundingBox.getCenter(new THREE.Vector3())
-
   const roofY = boundingBox.max.y - 0.2 * size.y
 
   // c) Create a plane that clips geometry *above* this roofY
@@ -191,14 +188,14 @@ export const renderPanoramicHandler = async (req, res) => {
     }
   })
 
-  camera.position.set(center.x, boundingBox.max.y + size.y, center.z)
-  camera.lookAt(center)
+
+  //camera.position.set(center.x, boundingBox.max.y + size.y, center.z)
+  //camera.lookAt(center)
+  fitModelToFrame(renderer.domElement, scene, model, camera, false)
 
   // f) Render & capture
   render(renderer, scene, camera, /*useSsaa*/ false)
   screenshotBuffers.push(await captureScreenshotAsBuffer(glCtx))
-
-  // 3) THIRD SCREENSHOT – angle 45° around the center
 
   // remove the plane for the last two images
   model.traverse((child) => {
@@ -214,20 +211,13 @@ export const renderPanoramicHandler = async (req, res) => {
 
 
   // --- 3) ANGLE 45° around the pivot
-  const deg2rad = (deg) => (deg * Math.PI) / 180
-  let rad = deg2rad(45)
-  camera.position.x = pivot.x + distance * Math.cos(rad)
-  camera.position.z = pivot.z + distance * Math.sin(rad)
-  camera.lookAt(pivot)
+  fitModelToFrame(renderer.domElement, scene, model, camera, true, 45)
 
   render(renderer, scene, camera, /*useSsaa*/ false)
   screenshotBuffers.push(await captureScreenshotAsBuffer(glCtx))
 
-  // --- 4) ANGLE 135° around the pivot
-  rad = deg2rad(135)
-  camera.position.x = pivot.x + distance * Math.cos(rad)
-  camera.position.z = pivot.z + distance * Math.sin(rad)
-  camera.lookAt(pivot)
+  // --- 4) ANGLE 225° around the pivot
+  fitModelToFrame(renderer.domElement, scene, model, camera, true, 225)
 
   render(renderer, scene, camera, /*useSsaa*/ false)
   screenshotBuffers.push(await captureScreenshotAsBuffer(glCtx))
