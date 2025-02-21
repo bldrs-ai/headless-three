@@ -1,5 +1,5 @@
 import {
-  captureScreenshot, fitModelToFrame, fitModelToFrameWithAngle, initThree, parseCamera, render
+  captureScreenshot, fitModelToFrame, initThree, parseCamera, render
 } from '../lib.js'
 import {parseUrl} from '../urls.js'
 import {load} from '../Loader.js'
@@ -214,13 +214,13 @@ export const renderPanoramicHandler = async (req, res) => {
 
 
   // --- 3) ANGLE 45° around the pivot
-  fitModelToFrameWithAngle(renderer.domElement, scene, model, camera, 45)
+  fitModelToFrame(renderer.domElement, scene, model, camera, true, 45)
 
   render(renderer, scene, camera, /*useSsaa*/ false)
   screenshotBuffers.push(await captureScreenshotAsBuffer(glCtx))
 
   // --- 4) ANGLE 225° around the pivot
-  fitModelToFrameWithAngle(renderer.domElement, scene, model, camera, 225)
+  fitModelToFrame(renderer.domElement, scene, model, camera, true, 225)
 
   render(renderer, scene, camera, /*useSsaa*/ false)
   screenshotBuffers.push(await captureScreenshotAsBuffer(glCtx))
