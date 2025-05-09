@@ -1,8 +1,8 @@
 import * as WebIFC from 'web-ifc';
 import { IFCSPACE, IFCOPENINGELEMENT, IFCPRODUCTDEFINITIONSHAPE, IFCRELAGGREGATES, IFCRELCONTAINEDINSPATIALSTRUCTURE, IFCRELDEFINESBYPROPERTIES, IFCRELASSOCIATESMATERIAL, IFCRELDEFINESBYTYPE, IFCPROJECT, IFCBUILDING } from 'web-ifc';
 import { Mesh, Color, MeshLambertMaterial, DoubleSide, Matrix4, BufferGeometry, BufferAttribute, Loader, FileLoader } from 'three';
-import { mergeBufferGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
-
+//import { mergeBufferGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
+import {mergeGeometries} from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 const nullIfcManagerErrorMessage = 'IfcManager is null!';
 
 class IFCModel extends Mesh {
@@ -171,11 +171,11 @@ class IFCParser {
     const materials = [];
     Object.keys(this.geometriesByMaterials).forEach((key) => {
       const geometriesByMaterial = this.geometriesByMaterials[key].geometries;
-      const merged = mergeBufferGeometries(geometriesByMaterial);
+      const merged = mergeGeometries(geometriesByMaterial);
       materials.push(this.geometriesByMaterials[key].material);
       geometries.push(merged);
     });
-    const combinedGeometry = mergeBufferGeometries(geometries, true);
+    const combinedGeometry = mergeGeometries(geometries, true);
     this.cleanUpGeometryMemory(geometries);
     if (this.BVH)
       this.BVH.applyThreeMeshBVH(combinedGeometry);

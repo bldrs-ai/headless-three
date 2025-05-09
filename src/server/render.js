@@ -1,12 +1,16 @@
 import {
-  captureScreenshot, fitModelToFrame, initThree, parseCamera, render
+  captureScreenshot, fitModelToFrame, initThree, initGl, initMocks, parseCamera, render,
+  initDom
 } from '../lib.js'
 import {parseUrl} from '../urls.js'
 import {load} from '../Loader.js'
 import {createTaggedLogger} from '../logging.js'
 import * as THREE from 'three'
 import Jimp from 'jimp'
-
+// import {initViewer} from '@bldrs-ai/conway-web-ifc-adapter/node_modules/@bldrs-ai/conway/compiled/src/rendering/threejs/html_viewer.js'
+import { /*ShadowQuality,*/ SimpleViewerScene } from '@bldrs-ai/conway-web-ifc-adapter/node_modules/@bldrs-ai/conway/compiled/src/rendering/threejs/simple_viewer_scene.js'
+// import SceneObject from '@bldrs-ai/conway-web-ifc-adapter/node_modules/@bldrs-ai/conway/compiled/src/rendering/threejs/scene_object.js'
+import { JSDOM } from "jsdom";
 
 const renderLogger = createTaggedLogger('/render')
 
@@ -50,7 +54,17 @@ export const renderHandler = async (req, res) => {
   }
 
   // renderLogger.log('server#post, model:', model)
-  const [glCtx, renderer, scene, camera] = initThree()
+   const [glCtx, renderer, scene, camera] = initThree()
+  
+  /*initDom()
+  const { initViewerWithGLContext } = await import("@bldrs-ai/conway-web-ifc-adapter/node_modules/@bldrs-ai/conway/compiled/src/rendering/threejs/html_viewer.js");
+  const width = 1024
+  const height = 768
+  const glCtx = initGl(width, height)
+  const simpleViewerScene = initViewerWithGLContext(glCtx, width, height)
+  const scene = simpleViewerScene.scene
+  const camera = simpleViewerScene.camera
+  const renderer = simpleViewerScene.renderer*/
   scene.add(model)
 
   if (parsedUrl.params.c) {

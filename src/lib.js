@@ -17,7 +17,6 @@ import {SSAARenderPass} from 'three/addons/postprocessing/SSAARenderPass.js'
 import {ShaderPass} from 'three/addons/postprocessing/ShaderPass.js'
 import {GammaCorrectionShader} from 'three/addons/shaders/GammaCorrectionShader.js'
 
-
 /** Init global.document, which three uses to create its canvas. */
 export function initDom() {
   const dom = new JSDOM(`<!DOCTYPE html>`, {pretendToBeVisual: true})
@@ -48,7 +47,7 @@ export function initDom() {
 
 /** Create a WebGL context using the 'gl' package. */
 export function initGl(width, height) {
-  const glCtx = gl(width, height, {antialias: true})
+  const glCtx = gl(width, height, {antialias: true, webgl2: true})
   if (glCtx === null) {
     throw new Error('Could not create requested WebGL context')
   }
@@ -86,6 +85,23 @@ export function initLights(scene) {
   scene.add(ambientLight)
 }
 
+export function initMocks() {
+  // 1) create your fake DOM
+const { window } = new JSDOM(`<!DOCTYPE html><html><body></body></html>`, {
+  pretendToBeVisual: true,
+});
+globalThis.window      = window;
+globalThis.document    = window.document;
+globalThis.HTMLElement = window.HTMLElement;
+globalThis.navigator   = window.navigator;
+
+// 2) stub out the usual browser globals
+window.requestAnimationFrame  = cb => setTimeout(cb,16);
+window.cancelAnimationFrame   = id => clearTimeout(id);
+window.innerWidth             = 1024;
+window.innerHeight            = 768;
+window.devicePixelRatio       = global.window.devicePixelRatio || 1;
+}
 
 export function initThree(w = 1024, h = 768) {
   const aspect = w / h
