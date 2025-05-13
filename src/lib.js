@@ -44,10 +44,26 @@ export function initDom() {
   return global.document
 }
 
+/** Create a SimpleViewerScene */
+export async function initSimpleViewerScene(_width = 1024, _height = 768) {
+  initDom()
+  const { initViewerWithGLContext } = await import("@bldrs-ai/conway-web-ifc-adapter/node_modules/@bldrs-ai/conway/compiled/src/rendering/threejs/html_viewer.js");
+  const width = _width
+  const height = _height
+  const glCtx = initGl(width, height)
+  const simpleViewerScene = initViewerWithGLContext(glCtx, width, height)
+  const scene = simpleViewerScene.scene
+  const camera = simpleViewerScene.camera
+  const renderer = simpleViewerScene.renderer
+
+
+  return {simpleViewerScene, scene, camera, renderer, glCtx}
+}
+
 
 /** Create a WebGL context using the 'gl' package. */
 export function initGl(width, height) {
-  const glCtx = gl(width, height, {antialias: true, webgl2: true})
+  const glCtx = gl(width, height, {antialias: true, createWebGL2Context: true})
   if (glCtx === null) {
     throw new Error('Could not create requested WebGL context')
   }
@@ -83,24 +99,6 @@ export function initLights(scene) {
   scene.add(directionalLight2)
   const ambientLight = new AmbientLight(0xffffee, 0.25)
   scene.add(ambientLight)
-}
-
-export function initMocks() {
-  // 1) create your fake DOM
-const { window } = new JSDOM(`<!DOCTYPE html><html><body></body></html>`, {
-  pretendToBeVisual: true,
-});
-globalThis.window      = window;
-globalThis.document    = window.document;
-globalThis.HTMLElement = window.HTMLElement;
-globalThis.navigator   = window.navigator;
-
-// 2) stub out the usual browser globals
-window.requestAnimationFrame  = cb => setTimeout(cb,16);
-window.cancelAnimationFrame   = id => clearTimeout(id);
-window.innerWidth             = 1024;
-window.innerHeight            = 768;
-window.devicePixelRatio       = global.window.devicePixelRatio || 1;
 }
 
 export function initThree(w = 1024, h = 768) {

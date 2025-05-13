@@ -1,16 +1,14 @@
 import {
-  captureScreenshot, fitModelToFrame, initThree, initGl, initMocks, parseCamera, render,
-  initDom
+  captureScreenshot, fitModelToFrame, initThree, parseCamera, render,
+  initSimpleViewerScene
 } from '../lib.js'
 import {parseUrl} from '../urls.js'
 import {load} from '../Loader.js'
 import {createTaggedLogger} from '../logging.js'
 import * as THREE from 'three'
 import Jimp from 'jimp'
-// import {initViewer} from '@bldrs-ai/conway-web-ifc-adapter/node_modules/@bldrs-ai/conway/compiled/src/rendering/threejs/html_viewer.js'
-import { /*ShadowQuality,*/ SimpleViewerScene } from '@bldrs-ai/conway-web-ifc-adapter/node_modules/@bldrs-ai/conway/compiled/src/rendering/threejs/simple_viewer_scene.js'
-// import SceneObject from '@bldrs-ai/conway-web-ifc-adapter/node_modules/@bldrs-ai/conway/compiled/src/rendering/threejs/scene_object.js'
-import { JSDOM } from "jsdom";
+import { SimpleViewerScene } from '@bldrs-ai/conway-web-ifc-adapter/node_modules/@bldrs-ai/conway/compiled/src/rendering/threejs/simple_viewer_scene.js'
+
 
 const renderLogger = createTaggedLogger('/render')
 
@@ -27,6 +25,9 @@ export const renderHandler = async (req, res) => {
     res.status(400).end('No valid model URL was provided')
     return
   }
+
+  // Set the viewer parameter to "conway" by default if not provided
+  const viewer = req.body.viewer ?? "threejs";
 
   const parsedUrl = parseUrl(modelUrl)
   renderLogger.log('debug', 'server#post, parsedUrl:', parsedUrl)
@@ -53,19 +54,15 @@ export const renderHandler = async (req, res) => {
     return
   }
 
-  // renderLogger.log('server#post, model:', model)
-   const [glCtx, renderer, scene, camera] = initThree()
-  
-  /*initDom()
-  const { initViewerWithGLContext } = await import("@bldrs-ai/conway-web-ifc-adapter/node_modules/@bldrs-ai/conway/compiled/src/rendering/threejs/html_viewer.js");
-  const width = 1024
-  const height = 768
-  const glCtx = initGl(width, height)
-  const simpleViewerScene = initViewerWithGLContext(glCtx, width, height)
-  const scene = simpleViewerScene.scene
-  const camera = simpleViewerScene.camera
-  const renderer = simpleViewerScene.renderer*/
-  scene.add(model)
+
+  let simpleViewerScene, scene, camera, renderer, glCtx
+  if (viewer === 'threejs') {
+    [glCtx, renderer, scene, camera] = initThree()
+    scene.add(model)
+  } else if (viewer === 'conway') {
+     ({ simpleViewerScene, scene, camera, renderer, glCtx } = await initSimpleViewerScene());
+     simpleViewerScene.addModelToScene(model)
+  }
 
   if (parsedUrl.params.c) {
     const [px, py, pz, tx, ty, tz] = parseCamera(parsedUrl.params.c) || [0,0,0,0,0,0]
@@ -110,6 +107,9 @@ export const renderPanoramicHandler = async (req, res) => {
     return
   }
 
+  // Set the viewer parameter to "conway" by default if not provided
+  const viewer = req.body.viewer ?? "threejs";
+
   const parsedUrl = parseUrl(modelUrl)
   renderLogger.log('debug', 'renderPanoramic#parsedUrl:', parsedUrl)
 
@@ -143,8 +143,14 @@ export const renderPanoramicHandler = async (req, res) => {
     return
   }
 
-  const [glCtx, renderer, scene, camera] = initThree()
-  scene.add(model)
+  let simpleViewerScene, scene, camera, renderer, glCtx
+  if (viewer === 'threejs') {
+    [glCtx, renderer, scene, camera] = initThree()
+    scene.add(model)
+  } else if (viewer === 'conway') {
+     ({ simpleViewerScene, scene, camera, renderer, glCtx } = await initSimpleViewerScene());
+     simpleViewerScene.addModelToScene(model)
+  }
 
   if (parsedUrl.params.c) {
     renderLogger.log(

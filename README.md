@@ -41,6 +41,15 @@ $ curl -d '{"url": "https://github.com/bldrs-ai/headless-three/blob/main/models/
        http://localhost:8001/render
 ```
 
+Pass "viewer": "conway" to use the new conway viewer:
+Send a render request pointing to a CAD file URL:
+```
+$ curl -d '{"url": "https://github.com/bldrs-ai/headless-three/blob/main/models/ifc/index.ifc", "viewer": "conway"}' \
+       -H 'content-type: application/json' \
+       -o rendered.png \
+       http://localhost:8001/render
+```
+
 Example render of index.ifc:
 ![index.ifc rendered to index.png](https://github.com/bldrs-ai/headless-three/blob/main/models/ifc/index.ifc.png)
 ![Bunny.obj rendered to Bunny.png](https://github.com/bldrs-ai/headless-three/blob/main/models/obj/Bunny.obj.png)
