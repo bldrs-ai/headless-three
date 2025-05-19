@@ -7,6 +7,7 @@ import {load} from '../Loader.js'
 import {createTaggedLogger} from '../logging.js'
 import * as THREE from 'three'
 import Jimp from 'jimp'
+// eslint-disable-next-line no-unused-vars
 import { SimpleViewerScene } from '@bldrs-ai/conway-web-ifc-adapter/node_modules/@bldrs-ai/conway/compiled/src/rendering/threejs/simple_viewer_scene.js'
 
 
@@ -169,7 +170,6 @@ export const renderPanoramicHandler = async (req, res) => {
     fitModelToFrame(renderer.domElement, scene, model, camera)
   }
 
-  const pivot = new THREE.Vector3(0, 0, 0)
   const screenshotBuffers = []
 
   // --- 1) DEFAULT vantage (fit the model to frame, if no custom camera param)
