@@ -7,8 +7,6 @@ import {load} from '../Loader.js'
 import {createTaggedLogger} from '../logging.js'
 import * as THREE from 'three'
 import Jimp from 'jimp'
-// eslint-disable-next-line no-unused-vars
-import { SimpleViewerScene } from '@bldrs-ai/conway-web-ifc-adapter/node_modules/@bldrs-ai/conway/compiled/src/rendering/threejs/simple_viewer_scene.js'
 
 
 const renderLogger = createTaggedLogger('/render')

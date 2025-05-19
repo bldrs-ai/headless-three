@@ -47,7 +47,7 @@ export function initDom() {
 /** Create a SimpleViewerScene */
 export async function initSimpleViewerScene(_width = 1024, _height = 768) {
   initDom()
-  const { initViewerWithGLContext } = await import("@bldrs-ai/conway-web-ifc-adapter/node_modules/@bldrs-ai/conway/compiled/src/rendering/threejs/html_viewer.js");
+  const { initViewerWithGLContext } = await import("@bldrs-ai/conway/src/rendering/threejs/html_viewer");
   const width = _width
   const height = _height
   const glCtx = initGl(width, height)
