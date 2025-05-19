@@ -13,7 +13,7 @@
     "build-server-conway": "node esbuild/server.esbuild.js",
     "build-server-webifc": "node esbuild/server-webifc.esbuild.js",
     "lint": "eslint",
-    "setup": "yarn clean && mkdir build && cp node_modules/gl/build/Release/webgl.node build && cp node_modules/@bldrs-ai/conway/compiled/dependencies/conway-geom/Dist/* build && cp node_modules/web-ifc/*.wasm build",
+    "setup": "yarn clean && mkdir build && cp node_modules/gl/build/Release/webgl.node build && cp node_modules/@bldrs-ai/conway/compiled/dependencies/conway-geom/Dist/* build && cp node_modules/@bldrs-ai/conway/compiled/dependencies/conway-geom/Dist/* dist && cp node_modules/web-ifc/*.wasm build",
     "serve": "node --enable-source-maps build/server.node.js",
     "serve-single-thread": "run-script-os",
     "serve-single-thread:linux:darwin": "FORCE_SINGLE_THREAD='true' yarn serve",
