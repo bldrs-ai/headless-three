@@ -17,7 +17,6 @@ import {SSAARenderPass} from 'three/addons/postprocessing/SSAARenderPass.js'
 import {ShaderPass} from 'three/addons/postprocessing/ShaderPass.js'
 import {GammaCorrectionShader} from 'three/addons/shaders/GammaCorrectionShader.js'
 
-
 /** Init global.document, which three uses to create its canvas. */
 export function initDom() {
   const dom = new JSDOM(`<!DOCTYPE html>`, {pretendToBeVisual: true})
@@ -45,10 +44,26 @@ export function initDom() {
   return global.document
 }
 
+/** Create a SimpleViewerScene */
+export async function initSimpleViewerScene(_width = 1024, _height = 768) {
+  initDom()
+  const { initViewerWithGLContext } = await import("@bldrs-ai/conway/src/rendering/threejs/html_viewer");
+  const width = _width
+  const height = _height
+  const glCtx = initGl(width, height)
+  const simpleViewerScene = initViewerWithGLContext(glCtx, width, height)
+  const scene = simpleViewerScene.scene
+  const camera = simpleViewerScene.camera
+  const renderer = simpleViewerScene.renderer
+
+
+  return {simpleViewerScene, scene, camera, renderer, glCtx}
+}
+
 
 /** Create a WebGL context using the 'gl' package. */
 export function initGl(width, height) {
-  const glCtx = gl(width, height, {antialias: true})
+  const glCtx = gl(width, height, {antialias: true, createWebGL2Context: true})
   if (glCtx === null) {
     throw new Error('Could not create requested WebGL context')
   }
@@ -85,7 +100,6 @@ export function initLights(scene) {
   const ambientLight = new AmbientLight(0xffffee, 0.25)
   scene.add(ambientLight)
 }
-
 
 export function initThree(w = 1024, h = 768) {
   const aspect = w / h

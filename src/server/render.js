@@ -1,5 +1,6 @@
 import {
-  captureScreenshot, fitModelToFrame, initThree, parseCamera, render
+  captureScreenshot, fitModelToFrame, initThree, parseCamera, render,
+  initSimpleViewerScene
 } from '../lib.js'
 import {parseUrl} from '../urls.js'
 import {load} from '../Loader.js'
@@ -23,6 +24,9 @@ export const renderHandler = async (req, res) => {
     res.status(400).end('No valid model URL was provided')
     return
   }
+
+  // Set the viewer parameter to "conway" by default if not provided
+  const viewer = req.body.viewer ?? "threejs";
 
   const parsedUrl = parseUrl(modelUrl)
   renderLogger.log('debug', 'server#post, parsedUrl:', parsedUrl)
@@ -49,9 +53,15 @@ export const renderHandler = async (req, res) => {
     return
   }
 
-  // renderLogger.log('server#post, model:', model)
-  const [glCtx, renderer, scene, camera] = initThree()
-  scene.add(model)
+
+  let simpleViewerScene, scene, camera, renderer, glCtx
+  if (viewer === 'threejs') {
+    [glCtx, renderer, scene, camera] = initThree()
+    scene.add(model)
+  } else if (viewer === 'conway') {
+     ({ simpleViewerScene, scene, camera, renderer, glCtx } = await initSimpleViewerScene());
+     simpleViewerScene.addModelToScene(model)
+  }
 
   if (parsedUrl.params.c) {
     const [px, py, pz, tx, ty, tz] = parseCamera(parsedUrl.params.c) || [0,0,0,0,0,0]
@@ -96,6 +106,9 @@ export const renderPanoramicHandler = async (req, res) => {
     return
   }
 
+  // Set the viewer parameter to "conway" by default if not provided
+  const viewer = req.body.viewer ?? "threejs";
+
   const parsedUrl = parseUrl(modelUrl)
   renderLogger.log('debug', 'renderPanoramic#parsedUrl:', parsedUrl)
 
@@ -129,8 +142,14 @@ export const renderPanoramicHandler = async (req, res) => {
     return
   }
 
-  const [glCtx, renderer, scene, camera] = initThree()
-  scene.add(model)
+  let simpleViewerScene, scene, camera, renderer, glCtx
+  if (viewer === 'threejs') {
+    [glCtx, renderer, scene, camera] = initThree()
+    scene.add(model)
+  } else if (viewer === 'conway') {
+     ({ simpleViewerScene, scene, camera, renderer, glCtx } = await initSimpleViewerScene());
+     simpleViewerScene.addModelToScene(model)
+  }
 
   if (parsedUrl.params.c) {
     renderLogger.log(
@@ -149,7 +168,6 @@ export const renderPanoramicHandler = async (req, res) => {
     fitModelToFrame(renderer.domElement, scene, model, camera)
   }
 
-  const pivot = new THREE.Vector3(0, 0, 0)
   const screenshotBuffers = []
 
   // --- 1) DEFAULT vantage (fit the model to frame, if no custom camera param)
