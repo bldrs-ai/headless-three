@@ -23,7 +23,7 @@
     "prepare": "husky"
   },
   "dependencies": {
-    "@bldrs-ai/conway-web-ifc-adapter": "0.22.921",
+    "@bldrs-ai/conway-web-ifc-adapter": "0.23.940",
     "@sentry/node": "7.64.0",
     "axios": "1.4.0",
     "camera-controls": "2.7.0",
