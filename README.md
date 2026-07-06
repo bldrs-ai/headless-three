@@ -1,7 +1,7 @@
 # headless-three
 This library is for rendering CAD models in three.js sceens in a headless environment.
 
-Supported formats: bld, fbx, glb, ifc, obj, pdb, stl, xyz.
+Supported formats: bld, fbx, glb, ifc, obj, pdb, stl, step, stp, xyz.
 
 [See src/Filetypes.js for current listing](https://github.com/bldrs-ai/headless-three/tree/main/src/Filetypes.js)
 
