@@ -160,7 +160,13 @@ async function findLoader(pathname) {
       loader = new FBXLoader
       break
     }
-    case '.ifc': {
+    case '.ifc':
+    // STEP goes through the same conway loader as IFC. Conway's web-ifc shim
+    // (OpenModel -> ModelFormatDetector) auto-detects IFC vs STEP from the
+    // bytes and routes AP203/AP214/AP242 to its STEP engine, so the raw model
+    // data is passed through unchanged, exactly as for .ifc.
+    case '.stp':
+    case '.step': {
       loader = await newIfcLoader()
       isLoaderAsync = true
       break

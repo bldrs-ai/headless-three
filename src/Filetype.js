@@ -2,7 +2,11 @@ import {assertDefined} from './assert.js'
 
 
 // TODO: 3dm, glb
-export const supportedTypes = ['bld', 'fbx', 'glb', 'ifc', 'obj', 'pdb', 'stl', 'xyz']
+// 'step'/'stp' are loaded through the same conway engine as 'ifc': conway's
+// web-ifc shim auto-detects IFC vs STEP (AP203/AP214/AP242) from the file
+// header, so no separate loader is needed. 'step' precedes 'stp' so the
+// filetype alternation prefers the longer match.
+export const supportedTypes = ['bld', 'fbx', 'glb', 'ifc', 'obj', 'pdb', 'stl', 'step', 'stp', 'xyz']
 
 export const supportedTypesUsageStr = `${supportedTypes.join(',')}`
 
