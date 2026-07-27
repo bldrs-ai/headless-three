@@ -33,4 +33,16 @@ describe('Filetype', () => {
       splitAroundExtension(`asdf.com/blah`)
     }).toThrow(FilenameParseError)
   })
+
+
+  // Matching is case-insensitive but the extension is returned as it appears
+  // in the path, so callers that compare it must normalize the case first.
+  it('splitAroundExtension matches uppercase and returns the extension as-matched', () => {
+    for (const ext of supportedTypes) {
+      const upperExt = ext.toUpperCase()
+      const {parts, extension} = splitAroundExtension(`asdf.${upperExt}/blah`)
+      expect(parts).toStrictEqual(['asdf', '/blah'])
+      expect(extension).toStrictEqual(`.${upperExt}`)
+    }
+  })
 })

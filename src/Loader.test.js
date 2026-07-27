@@ -1,5 +1,7 @@
 import {load} from './Loader'
 import './fetch-polyfill'
+import fs from 'fs'
+import os from 'os'
 import path from 'path'
 
 // TODO(pablo): export and reuse when bun bug is fixed
@@ -95,6 +97,41 @@ describe('Loader', () => {
     // Clean up
     delete process.env.APP_ENV
     jest.restoreAllMocks()
+  })
+
+
+  // Extensions are matched case-insensitively, so uppercase names like
+  // 'FOO.IFC' or 'NEMA 23 - 76mm.STEP' must load like their lowercase peers.
+  it('loads a model with an uppercase extension', async () => {
+    const onProgress = jest.fn()
+    const onUnknownType = jest.fn()
+    const onError = jest.fn()
+
+    // Ensure APP_ENV is not 'prod' to enable file:// loading
+    process.env.APP_ENV = 'development'
+
+    // Copy a known-good model to a temp file with an uppercase extension.
+    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'headless-three-'))
+    const upperCasePath = path.join(tmpDir, 'INDEX.IFC')
+    fs.copyFileSync(path.resolve('./models/ifc/index.ifc'), upperCasePath)
+
+    try {
+      const model = await load(
+        new URL(`file://${upperCasePath}`),
+        onProgress,
+        onUnknownType,
+        onError
+      )
+
+      expect(onUnknownType).not.toHaveBeenCalled()
+      expect(onError).not.toHaveBeenCalled()
+      expect(model).toBeDefined()
+      expect(model.isObject3D).toBe(true)
+    } finally {
+      fs.rmSync(tmpDir, {recursive: true, force: true})
+      delete process.env.APP_ENV
+      jest.restoreAllMocks()
+    }
   })
 
 
