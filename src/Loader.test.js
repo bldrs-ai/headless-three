@@ -113,7 +113,7 @@ describe('Loader', () => {
     // Copy a known-good model to a temp file with an uppercase extension.
     const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'headless-three-'))
     const upperCasePath = path.join(tmpDir, 'INDEX.IFC')
-    fs.copyFileSync(path.resolve('./models/ifc/index.ifc'), upperCasePath)
+    fs.copyFileSync(path.join(__dirname, '../models/ifc/index.ifc'), upperCasePath)
 
     try {
       const model = await load(
@@ -130,7 +130,6 @@ describe('Loader', () => {
     } finally {
       fs.rmSync(tmpDir, {recursive: true, force: true})
       delete process.env.APP_ENV
-      jest.restoreAllMocks()
     }
   })
 
