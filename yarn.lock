@@ -1141,23 +1141,14 @@
   resolved "https://registry.npmjs.org/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
-"@bldrs-ai/conway-web-ifc-adapter@0.23.940":
-  version "0.23.940"
-  resolved "https://registry.yarnpkg.com/@bldrs-ai/conway-web-ifc-adapter/-/conway-web-ifc-adapter-0.23.940.tgz#b824dcf61d3c175a846a00f5c931947214c2d0bb"
-  integrity sha512-1JerFycCVj8pQtHDSNPYj9zQqp7IoMgVgIABNqY8F7m4mocLw2UFPpf+MTXKdJnoy5Fb3GXJmJrhXsLV7jcY4w==
+"@bldrs-ai/conway@1.438.1315":
+  version "1.438.1315"
+  resolved "https://registry.yarnpkg.com/@bldrs-ai/conway/-/conway-1.438.1315.tgz#a44e5e83ab3ddd134686315224743cde56618ce9"
+  integrity sha512-JrhG2IHvEH90HchCcLSNrfsPP+/V+IwclN/l76UR5VU9+eifxMoFHS6rD/nrkcy0Xmc/inZij/99+2bn0BXX3g==
   dependencies:
-    "@bldrs-ai/conway" "0.23.940"
-    "@types/node" "22.5.5"
     gl-matrix "3.4.3"
-    typescript "5.6.2"
-
-"@bldrs-ai/conway@0.23.940":
-  version "0.23.940"
-  resolved "https://registry.yarnpkg.com/@bldrs-ai/conway/-/conway-0.23.940.tgz#5230c6bcac973cb9c0cc9f1b0c71b482f7d5d737"
-  integrity sha512-oP/FJaMXF5DXZpqNylEnd0U+gFMg7Vmlg3vdmxZO3RImQvSACjBgSOZG9OJeUO9AjvVLOdgFP88kUvJ7nqB6pA==
-  dependencies:
     seedrandom "3.0.5"
-    three "^0.173.0"
+    three "^0.184.0"
     yargs "17.7.1"
 
 "@colors/colors@1.6.0", "@colors/colors@^1.6.0":
@@ -2333,13 +2324,6 @@
   version "16.9.1"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-16.9.1.tgz#0611b37db4246c937feef529ddcc018cf8e35708"
   integrity sha512-QpLcX9ZSsq3YYUUnD3nFDY8H7wctAhQj/TFKL8Ya8v5fMm3CFXxo8zStsLAl780ltoYoo1WvKUVGBQK+1ifr7g==
-
-"@types/node@22.5.5":
-  version "22.5.5"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-22.5.5.tgz#52f939dd0f65fc552a4ad0b392f3c466cc5d7a44"
-  integrity sha512-Xjs4y5UPO/CLdzpgR6GirZJx36yScjh73+2NlLlkFRSoQN8B0DpfXPdZGnvVmLRLOsqDpOfTNv7D9trgGhmOIA==
-  dependencies:
-    undici-types "~6.19.2"
 
 "@types/qs@*":
   version "6.9.10"
@@ -7284,10 +7268,15 @@ text-hex@1.0.x:
   resolved "https://registry.yarnpkg.com/text-hex/-/text-hex-1.0.0.tgz#69dc9c1b17446ee79a92bf5b884bb4b9127506f5"
   integrity sha512-uuVGNWzgJ4yhRaNSiubPY7OjISw4sw4E5Uv0wbjp+OzcbmVU/rsT8ujgcXJhn9ypzsgr5vlzpPqP+MBBKcGvbg==
 
-three@0.173.0, three@^0.173.0:
+three@0.173.0:
   version "0.173.0"
   resolved "https://registry.yarnpkg.com/three/-/three-0.173.0.tgz#e82989961cd2db05768540458c81b29f565be921"
   integrity sha512-AUwVmViIEUgBwxJJ7stnF0NkPpZxx1aZ6WiAbQ/Qq61h6I9UR4grXtZDmO8mnlaNORhHnIBlXJ1uBxILEKuVyw==
+
+three@^0.184.0:
+  version "0.184.0"
+  resolved "https://registry.yarnpkg.com/three/-/three-0.184.0.tgz#5bca0a3851eea5345e4c205567b40dfa49b791b5"
+  integrity sha512-wtTRjG92pM5eUg/KuUnHsqSAlPM296brTOcLgMRqEeylYTh/CdtvKUvCyyCQTzFuStieWxvZb8mVTMvdPyUpxg==
 
 through2@^0.6.3:
   version "0.6.5"
@@ -7507,11 +7496,6 @@ typed-array-length@^1.0.7:
     possible-typed-array-names "^1.0.0"
     reflect.getprototypeof "^1.0.6"
 
-typescript@5.6.2:
-  version "5.6.2"
-  resolved "https://registry.yarnpkg.com/typescript/-/typescript-5.6.2.tgz#d1de67b6bef77c41823f822df8f0b3bcff60a5a0"
-  integrity sha512-NW8ByodCSNCwZeghjN3o+JX5OFH0Ojg6sadjEKY4huZ52TqbJTJnDo5+Tw98lSy63NZvi4n+ez5m2u5d4PkZyw==
-
 unbox-primitive@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/unbox-primitive/-/unbox-primitive-1.1.0.tgz#8d9d2c9edeea8460c7f35033a88867944934d1e2"
@@ -7521,11 +7505,6 @@ unbox-primitive@^1.1.0:
     has-bigints "^1.0.2"
     has-symbols "^1.1.0"
     which-boxed-primitive "^1.1.1"
-
-undici-types@~6.19.2:
-  version "6.19.8"
-  resolved "https://registry.yarnpkg.com/undici-types/-/undici-types-6.19.8.tgz#35111c9d1437ab83a7cdc0abae2f26d88eda0a02"
-  integrity sha512-ve2KP6f/JnbPBFyobGHuerC9g1FYGn/F8n1LWTwNxCEzd6IfqTwUQcNXgEtmmQ6DlRrC1hrSrBnCZPokRrDHjw==
 
 unicode-canonical-property-names-ecmascript@^2.0.0:
   version "2.0.0"

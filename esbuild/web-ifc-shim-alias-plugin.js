@@ -8,7 +8,9 @@ function webIfcShimAliasPlugin(isConway = true) {
       build.onResolve({ filter: /^web-ifc$/ }, (/* args */) => {
         return {
           path: isConway ?
-            path.resolve('node_modules/@bldrs-ai/conway-web-ifc-adapter/compiled/src/ifc_api.js') :
+            // The standalone @bldrs-ai/conway-web-ifc-adapter package is
+            // retired; conway now ships the web-ifc compat shim in-tree.
+            path.resolve('node_modules/@bldrs-ai/conway/compiled/src/compat/web-ifc/ifc_api.js') :
             path.resolve('../external/web-ifc-api.js'),
         }
       });
