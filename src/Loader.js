@@ -146,11 +146,16 @@ async function readModel(loader, modelData, basePath, isLoaderAsync) {
  */
 async function findLoader(pathname) {
   const {/* parts, */ extension} = Filetype.splitAroundExtension(pathname)
+  // splitAroundExtension matches case-insensitively and returns the extension
+  // exactly as it appears in the path, e.g. '.IFC' for 'Foo.IFC'.  The cases
+  // below are lowercase, so normalize or uppercase names fall through to the
+  // default and are wrongly rejected as unsupported.
+  const normalizedExtension = extension.toLowerCase()
   let loader
   let isLoaderAsync = false
   let isFormatText = false
   let fixupCb
-  switch (extension) {
+  switch (normalizedExtension) {
     case '.bld': {
       loader = new BLDLoader
       isFormatText = true
